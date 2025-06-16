@@ -1,263 +1,276 @@
+// Global constant for the master deck of cards
+const masterDeck = [
+    { scenario: "Downtown Apartment Fire", casualties: 12 },
+    { scenario: "Highway Bus Crash", casualties: 35 },
+    { scenario: "Train Derailment (Rural Area)", casualties: 75 },
+    { scenario: "Food Poisoning Outbreak at Large Festival", casualties: 250 },
+    { scenario: "Bridge Collapse During Rush Hour", casualties: 45 },
+    { scenario: "Small Plane Crash (Suburban Area)", casualties: 4 },
+    { scenario: "Stadium Stampede During Concert", casualties: 90 },
+    { scenario: "Factory Explosion (Chemical Plant)", casualties: 22 },
+    { scenario: "Amusement Park Ride Malfunction", casualties: 8 },
+    { scenario: "Cruise Ship Capsizes in Storm", casualties: 450 },
+    { scenario: "Tornado Hits Small Town", casualties: 110 },
+    { scenario: "Earthquake in Major City (7.2 Richter)", casualties: 1200 },
+    { scenario: "Volcano Eruption (Nearby Populated Area)", casualties: 550 },
+    { scenario: "Major Freeway Pile-up (Foggy Conditions)", casualties: 18 },
+    { scenario: "Building Collapse (Old Structure)", casualties: 28 },
+    { scenario: "Ferry Sinking (Overcrowded)", casualties: 150 },
+    { scenario: "Wildfire Engulfs Residential Area", casualties: 65 },
+    { scenario: "Mining Accident (Cave-in)", casualties: 9 },
+    { scenario: "Heatwave in Urban Area (Elderly Affected)", casualties: 210 },
+    { scenario: "Blizzard Strands Motorists on Highway", casualties: 7 },
+    { scenario: "Industrial Spill Contaminates Water Supply", casualties: 300 }
+];
+
+// DOM Element References
+const humanScoreSpan = document.getElementById('human-score');
+const aiScoreSpan = document.getElementById('ai-score');
+const humanTokensSpan = document.getElementById('human-tokens');
+
+const cardSlots = [
+    {
+        slot: document.getElementById('card-slot-1'),
+        scenarioText: document.getElementById('card-slot-1').querySelector('.scenario-text'),
+        casualtyText: document.getElementById('card-slot-1').querySelector('.casualty-text')
+    },
+    {
+        slot: document.getElementById('card-slot-2'),
+        scenarioText: document.getElementById('card-slot-2').querySelector('.scenario-text'),
+        casualtyText: document.getElementById('card-slot-2').querySelector('.casualty-text')
+    },
+    {
+        slot: document.getElementById('card-slot-3'),
+        scenarioText: document.getElementById('card-slot-3').querySelector('.scenario-text'),
+        casualtyText: document.getElementById('card-slot-3').querySelector('.casualty-text')
+    }
+];
+
+const cardChoiceRadios = document.querySelectorAll('input[name="card-choice"]');
+const tokenAmountRadios = document.querySelectorAll('input[name="token-amount"]');
+const placeBetBtn = document.getElementById('place-bet-btn');
+const nextRoundBtn = document.getElementById('next-round-btn');
+
+// Ensure the querySelector targets the <p> tag inside #ai-bet-display if one exists,
+// or just the div itself if we're setting its textContent directly.
+// Based on HTML, there's no <p> tag, so we'll select the div.
+// Correction: HTML has <p>AI is thinking...</p>, so target that.
+// If it's just one <p>, this is fine. If more, might need an ID on the <p>.
+const aiBetDisplayP = document.getElementById('ai-bet-display').querySelector('p'); // Assuming one <p> for AI's bet text
+const roundOutcomeMessageP = document.getElementById('round-outcome-message'); // This is a <p> element
+
+// Game State Variables
+let humanScore = 0;
+let aiScore = 0;
+let humanTokensCurrentRound = 3; // Player starts with 3 tokens each round
+let deck = [];
+let currentCards = []; // Array to hold the 3 cards in play
+
+// --- Utility Functions ---
+function initializeDeck() {
+    deck = [...masterDeck]; // Shallow copy
+    // Optional: Shuffle the deck. For example:
+    // deck.sort(() => Math.random() - 0.5);
+    console.log("Deck initialized with " + deck.length + " cards.");
+}
+
+function drawCardsAndDisplay(numCardsToDraw) {
+    if (deck.length < numCardsToDraw) {
+        initializeDeck(); // Reshuffle if not enough cards
+        // Potentially add a message to UI about reshuffling
+        console.log("Deck was low, reshuffled.");
+        if (deck.length < numCardsToDraw) {
+            // This should only happen if masterDeck has fewer than numCardsToDraw
+            console.error("Not enough cards in masterDeck to draw required number.");
+            alert("Error: Not enough unique cards available to continue the game!");
+            return false; // Indicate failure
+        }
+    }
+
+    currentCards = []; // Clear previous round's cards
+    for (let i = 0; i < numCardsToDraw; i++) {
+        const randomIndex = Math.floor(Math.random() * deck.length);
+        currentCards.push(deck.splice(randomIndex, 1)[0]);
+    }
+
+    // Display cards
+    currentCards.forEach((card, index) => {
+        if (cardSlots[index]) {
+            cardSlots[index].scenarioText.textContent = card.scenario;
+            cardSlots[index].casualtyText.textContent = 'Casualties: ???';
+            cardSlots[index].casualtyText.style.display = 'none'; // Initially hidden
+        }
+    });
+    return true; // Indicate success
+}
+
+// --- Game Logic Functions ---
+function startNewRound() {
+    console.log("Starting new round...");
+    if (!drawCardsAndDisplay(3)) {
+        // Failed to draw cards, perhaps an alert was shown. Stop further round setup.
+        placeBetBtn.disabled = true; // Disable betting if game cannot proceed
+        return;
+    }
+
+    humanTokensCurrentRound = 3;
+    humanTokensSpan.textContent = humanTokensCurrentRound;
+    humanScoreSpan.textContent = humanScore;
+    aiScoreSpan.textContent = aiScore;
+
+    // Reset UI elements
+    aiBetDisplayP.textContent = "AI is thinking..."; // Reset AI display
+    roundOutcomeMessageP.textContent = "Place your bet for the current scenarios."; // Reset outcome message
+
+    // Set default radio button selections
+    if (cardChoiceRadios.length > 0) cardChoiceRadios[0].checked = true;
+    if (tokenAmountRadios.length > 0) tokenAmountRadios[0].checked = true;
+
+    // Enable radio buttons and place bet button
+    cardChoiceRadios.forEach(radio => radio.disabled = false);
+    tokenAmountRadios.forEach(radio => {
+        radio.disabled = parseInt(radio.value) > humanTokensCurrentRound;
+    });
+    placeBetBtn.disabled = false;
+
+    nextRoundBtn.style.display = 'none'; // Hide next round button
+    console.log("New round setup complete. Player can bet.");
+}
+
+function getPlayerBet() {
+    const chosenCardInput = document.querySelector('input[name="card-choice"]:checked');
+    const chosenTokenInput = document.querySelector('input[name="token-amount"]:checked');
+
+    let cardIndex = 0;
+    if (chosenCardInput) {
+        cardIndex = parseInt(chosenCardInput.value) - 1; // Convert 1-based HTML value to 0-based index
+    } else {
+        // Default to first card if somehow none is checked (should not happen with 'checked' in HTML)
+        if (cardChoiceRadios.length > 0) cardChoiceRadios[0].checked = true;
+    }
+
+    let tokensBet = 0;
+    if (chosenTokenInput) {
+        tokensBet = parseInt(chosenTokenInput.value);
+    } else {
+        // Default to 1 token if somehow none is checked (should not happen)
+        if (tokenAmountRadios.length > 0) tokenAmountRadios[0].checked = true;
+        tokensBet = 1;
+    }
+
+    // Validate token amount against available tokens
+    if (humanTokensCurrentRound === 0) {
+        tokensBet = 0;
+    } else if (tokensBet > humanTokensCurrentRound) {
+        tokensBet = humanTokensCurrentRound; // Cap bet at available tokens
+        // Update radio button to reflect this forced change (optional, but good UX)
+        document.querySelector(`input[name="token-amount"][value="${tokensBet}"]`).checked = true;
+    }
+
+    return { cardIndex, tokens: tokensBet };
+}
+
+function getAIBet() {
+    // AI randomly chooses one of the three cards (index 0, 1, or 2)
+    const aiCardChoiceIndex = Math.floor(Math.random() * 3);
+    // AI randomly chooses to bet 1, 2, or 3 tokens
+    const aiTokensBet = Math.floor(Math.random() * 3) + 1;
+
+    return { cardIndex: aiCardChoiceIndex, tokens: aiTokensBet };
+}
+
+function determineWinner(threeCardsArray) {
+    let highestCasualties = -1;
+    let winningIndices = [];
+
+    if (!threeCardsArray || threeCardsArray.length !== 3) {
+        console.error("determineWinner received invalid array:", threeCardsArray);
+        return []; // Should not proceed if card data is incorrect
+    }
+
+    for (let i = 0; i < threeCardsArray.length; i++) {
+        if (threeCardsArray[i].casualties > highestCasualties) {
+            highestCasualties = threeCardsArray[i].casualties;
+            winningIndices = [i]; // New highest, reset previous winners
+        } else if (threeCardsArray[i].casualties === highestCasualties) {
+            winningIndices.push(i); // Another card ties for highest
+        }
+    }
+    return winningIndices;
+}
+
+function resolveRound() {
+    const playerBet = getPlayerBet();
+    const aiGeneratedBet = getAIBet(); // Renamed to avoid conflict if we store AI bet globally
+
+    // 1. Reveal casualties
+    currentCards.forEach((card, index) => {
+        cardSlots[index].casualtyText.textContent = `Casualties: ${card.casualties}`;
+        cardSlots[index].casualtyText.style.display = 'block';
+    });
+
+    // 2. Determine winning card(s)
+    const winningCardIndices = determineWinner(currentCards);
+
+    let outcomeMessages = []; // Use an array to build messages
+
+    // 3. AI's Bet Display (show this before outcomes)
+    aiBetDisplayP.textContent = `AI bet ${aiGeneratedBet.tokens} token(s) on Scenario ${aiGeneratedBet.cardIndex + 1}.`;
+
+    // 4. Player's outcome
+    if (playerBet.tokens > 0) {
+        if (winningCardIndices.includes(playerBet.cardIndex)) {
+            humanScore += playerBet.tokens;
+            outcomeMessages.push(`You bet ${playerBet.tokens} on Scenario ${playerBet.cardIndex + 1} and WON!`);
+        } else {
+            outcomeMessages.push(`You bet ${playerBet.tokens} on Scenario ${playerBet.cardIndex + 1} and lost.`);
+        }
+        humanTokensCurrentRound -= playerBet.tokens; // Player "spends" tokens
+        if(humanTokensCurrentRound < 0) humanTokensCurrentRound = 0; // Safety, though getPlayerBet should prevent this.
+    } else {
+        outcomeMessages.push("You chose not to bet any tokens this round.");
+    }
+
+    // 5. AI's outcome
+    if (winningCardIndices.includes(aiGeneratedBet.cardIndex)) {
+        aiScore += aiGeneratedBet.tokens;
+        outcomeMessages.push(`AI won its bet of ${aiGeneratedBet.tokens} token(s).`);
+    } else {
+        outcomeMessages.push(`AI lost its bet.`);
+    }
+
+    // 6. Announce winning card(s)
+    if (winningCardIndices.length > 0) {
+        const winnerText = winningCardIndices.map(idx => `Scenario ${idx + 1} (${currentCards[idx].casualties} casualties)`).join(' and ');
+        outcomeMessages.push(`Highest casualty count was from: ${winnerText}.`);
+    } else {
+        outcomeMessages.push("No card had the highest casualties (this indicates an issue).");
+    }
+
+    // Update scores and token display
+    humanScoreSpan.textContent = humanScore;
+    aiScoreSpan.textContent = aiScore;
+    humanTokensSpan.textContent = humanTokensCurrentRound; // Show tokens left *after* betting for the round
+
+    roundOutcomeMessageP.innerHTML = outcomeMessages.join('<br>');
+
+    // Update button states
+    placeBetBtn.disabled = true;
+    cardChoiceRadios.forEach(radio => radio.disabled = true);
+    tokenAmountRadios.forEach(radio => radio.disabled = true);
+
+    nextRoundBtn.style.display = 'inline-block'; // Or 'block' if it's full width
+    nextRoundBtn.disabled = false;
+    console.log("Round resolved.");
+}
+
+
+// Event Listeners & Initialization
 document.addEventListener('DOMContentLoaded', () => {
-    // Card Data
-    const cards = [
-        // AorB Cards
-        {
-            type: 'AorB',
-            scenarioA: 'Being killed by a shark.',
-            scenarioB: 'Being killed by a vending machine.',
-            answer: 'B', // Vending machines are surprisingly dangerous
-            explanation: 'Roughly 2-4 people die from vending machines per year in the US (they fall on them when trying to shake them). Shark fatalities are rarer, averaging about 1 per year globally in recent years, though it varies.'
-        },
-        {
-            type: 'AorB',
-            scenarioA: 'Dying from a bee sting.',
-            scenarioB: 'Dying from a dog attack.',
-            answer: 'A', // Bee stings (anaphylaxis) cause more deaths in the US.
-            explanation: 'In the U.S., bee, wasp, and hornet stings account for around 50-100 deaths per year. Deaths from dog attacks are lower, typically 30-50 per year.'
-        },
-        {
-            type: 'AorB',
-            scenarioA: 'Being dealt a Royal Flush in a game of poker (5 card draw).',
-            scenarioB: 'Winning an Olympic gold medal.',
-            answer: 'B', // Odds for Royal Flush are ~1 in 650,000. Many more Olympic medals awarded.
-            explanation: 'The odds of being dealt a Royal Flush are approximately 1 in 649,740. The number of Olympic gold medals awarded is in the hundreds every 2 years (Summer/Winter). More people have won gold medals than have been dealt a royal flush on the first hand.'
-        },
-        {
-            type: 'AorB',
-            scenarioA: 'The population of New York City.',
-            scenarioB: 'The number of active Facebook users.',
-            answer: 'B',
-            explanation: 'Facebook has billions of active users, far exceeding NYC\'s population of ~8.5 million.'
-        },
-        {
-            type: 'AorB',
-            scenarioA: 'Dying from an asteroid impact (global catastrophe).',
-            scenarioB: 'Dying in a car accident during a 500-mile trip.',
-            answer: 'B', // Car accidents are far more common.
-            explanation: 'The lifetime risk of dying in a car accident is around 1 in 107. The risk of dying from a global asteroid impact is estimated at 1 in 700,000 to 1 in 1.6 million, though these are very rough, long-term estimates.'
-        },
-        // Coconut Cards (vs. Death by Coconut - estimated odds 1 in 250 million)
-        {
-            type: 'Coconut',
-            coconutScenario: 'Winning the Powerball Grand Prize (US lottery).',
-            answerMoreLikely: false, // Powerball odds are worse, e.g., 1 in 292 million
-            explanation: 'The odds of winning the Powerball jackpot are approximately 1 in 292.2 million, making it less likely than dying from a falling coconut (estimated at 1 in 250 million, though this is a very rough estimate).'
-        },
-        {
-            type: 'Coconut',
-            coconutScenario: 'Being struck by lightning in your lifetime.',
-            answerMoreLikely: true, // Odds of being struck by lightning in a lifetime (US) ~1 in 15,300
-            explanation: 'The odds of being struck by lightning in an 80-year lifetime in the U.S. are about 1 in 15,300. This is far more likely than death by coconut.'
-        },
-        {
-            type: 'Coconut',
-            coconutScenario: 'Becoming President of the United States.',
-            answerMoreLikely: true, // ~45 presidents out of ~330 million people. Odds are low but better than coconuts.
-            explanation: 'There have been 46 presidents of the United States. With a US population of over 330 million, the odds are very low, but still significantly higher than the estimated 1 in 250 million chance of dying from a coconut.'
-        },
-        {
-            type: 'Coconut',
-            coconutScenario: 'Dating a millionaire.',
-            answerMoreLikely: true, // There are millions of millionaires in the US alone.
-            explanation: 'There are over 20 million millionaires in the U.S. alone. While not everyone will date one, the probability is vastly higher than death by coconut.'
-        },
-        {
-            type: 'Coconut',
-            coconutScenario: 'Being a victim of a shark attack (not necessarily fatal).',
-            answerMoreLikely: true, // Non-fatal shark attacks are more common than coconut deaths.
-            explanation: 'The odds of a non-fatal shark attack are estimated to be around 1 in 11.5 million for surfers, and lower for general beachgoers, but still much more probable than the 1 in 250 million chance of death by coconut.'
-        }
-        // Add more diverse cards
-    ];
+    initializeDeck();
+    startNewRound(); // Start the first round
+    console.log("Game initialized and first round started.");
 
-    let currentCard = null; // Will store the card object, not just index
-    let humanScore = 0;
-    let aiScore = 0;
-    let isHumanTurnToGuess = true; // true for human, false for AI
-
-    // DOM Elements
-    const readerInfoDiv = document.getElementById('reader-info');
-    const questionAreaDiv = document.getElementById('question-area'); // To hide/show all questions
-    const scenarioADiv = document.getElementById('scenario-a');
-    const scenarioBDiv = document.getElementById('scenario-b');
-    const coconutScenarioDiv = document.getElementById('coconut-scenario');
-    const btnA = document.getElementById('btn-a'); // Text: A
-    const btnB = document.getElementById('btn-b'); // Text: B
-    const btnMore = document.getElementById('btn-more'); // Text: More Likely
-    const btnLess = document.getElementById('btn-less'); // Text: Less Likely
-    const revealAreaDiv = document.getElementById('reveal-area');
-    const player1ScoreSpan = document.getElementById('player1-score'); // Will be updated to humanScoreSpan later if needed by ID
-    const player2ScoreSpan = document.getElementById('player2-score'); // Will be updated to aiScoreSpan later if needed by ID
-    const drawCardBtn = document.getElementById('draw-card-btn');
-    // const answerOptionsDiv = document.getElementById('answer-options'); // Not strictly needed if buttons are manipulated directly
-
-    function updateScores() {
-        player1ScoreSpan.textContent = humanScore; // HTML ID is player1-score
-        player2ScoreSpan.textContent = aiScore;   // HTML ID is player2-score
-    }
-
-    function hideAllScenarios() {
-        scenarioADiv.style.display = 'none';
-        scenarioBDiv.style.display = 'none';
-        coconutScenarioDiv.style.display = 'none';
-        questionAreaDiv.style.display = 'none'; // Hide the whole area
-    }
-
-    function hideAnswerButtons() {
-        btnA.style.display = 'none';
-        btnB.style.display = 'none';
-        btnMore.style.display = 'none';
-        btnLess.style.display = 'none';
-    }
-
-    function setupGame() {
-        updateScores();
-        isHumanTurnToGuess = true; // Human starts
-        readerInfoDiv.textContent = "Your turn to guess. Click 'Draw Card'.";
-        drawCardBtn.disabled = false;
-        hideAllScenarios();
-        hideAnswerButtons();
-        revealAreaDiv.style.display = 'none';
-    }
-
-    function drawCard() {
-        if (cards.length === 0) {
-            readerInfoDiv.textContent = "Game Over!";
-            // Final winner text is already fine
-            if (humanScore > aiScore) {
-                revealAreaDiv.textContent = `Human Wins! ${humanScore} to ${aiScore}`;
-            } else if (aiScore > humanScore) {
-                revealAreaDiv.textContent = `AI Wins! ${aiScore} to ${humanScore}`;
-            } else {
-                revealAreaDiv.textContent = `It's a Tie! ${humanScore} to ${aiScore}`;
-            }
-            revealAreaDiv.style.display = 'block';
-            drawCardBtn.disabled = true;
-            hideAllScenarios();
-            hideAnswerButtons();
-            return;
-        }
-
-        const cardIndex = Math.floor(Math.random() * cards.length);
-        currentCard = cards[cardIndex];
-        cards.splice(cardIndex, 1); // Remove card from deck
-
-        console.log("Drawn card:", currentCard);
-        hideAllScenarios();
-        hideAnswerButtons();
-        revealAreaDiv.style.display = 'none';
-        questionAreaDiv.style.display = 'block';
-        drawCardBtn.disabled = true; // Disable until choice is made or AI has chosen
-
-        if (isHumanTurnToGuess) {
-            readerInfoDiv.textContent = "Your turn: Read the scenarios and make your choice.";
-            if (currentCard.type === 'AorB') {
-                scenarioADiv.textContent = "A: " + currentCard.scenarioA;
-                scenarioBDiv.textContent = "B: " + currentCard.scenarioB;
-                scenarioADiv.style.display = 'block';
-                scenarioBDiv.style.display = 'block';
-                btnA.style.display = 'inline-block';
-                btnB.style.display = 'inline-block';
-            } else if (currentCard.type === 'Coconut') {
-                coconutScenarioDiv.textContent = currentCard.coconutScenario;
-                coconutScenarioDiv.style.display = 'block';
-                btnMore.style.display = 'inline-block';
-                btnLess.style.display = 'inline-block';
-            }
-        } else { // AI's turn
-            readerInfoDiv.textContent = "AI is thinking...";
-            // Display the question for AI too (optional, but good for transparency)
-             if (currentCard.type === 'AorB') {
-                scenarioADiv.textContent = "A: " + currentCard.scenarioA;
-                scenarioBDiv.textContent = "B: " + currentCard.scenarioB;
-                scenarioADiv.style.display = 'block';
-                scenarioBDiv.style.display = 'block';
-            } else if (currentCard.type === 'Coconut') {
-                coconutScenarioDiv.textContent = currentCard.coconutScenario;
-                coconutScenarioDiv.style.display = 'block';
-            }
-            // AI makes a guess after a short delay for effect
-            setTimeout(() => {
-                const aiGuess = getAIGuess(currentCard.type);
-                handleAnswer(aiGuess, false); // Pass AI's guess and isHumanGuess = false
-            }, 1500); // 1.5 second delay
-        }
-    }
-
-    function handleAnswer(choice, isHumanGuess) { // Added isHumanGuess parameter
-        if (!currentCard) return;
-
-        let correct = false;
-        let correctAnswerText = "";
-
-        if (currentCard.type === 'AorB') {
-            correct = (choice === currentCard.answer);
-            correctAnswerText = currentCard.answer === 'A' ? currentCard.scenarioA : currentCard.scenarioB;
-        } else if (currentCard.type === 'Coconut') {
-            if (choice === 'More' && currentCard.answerMoreLikely) correct = true;
-            if (choice === 'Less' && !currentCard.answerMoreLikely) correct = true;
-            correctAnswerText = currentCard.answerMoreLikely ? "More Likely" : "Less Likely";
-        }
-
-        const chosenBy = isHumanGuess ? "You" : "AI";
-        revealAreaDiv.innerHTML = `${chosenBy} chose: ${choice}.<br>`;
-
-        if (correct) {
-            revealAreaDiv.innerHTML += "Correct! +1 point. ";
-            if (isHumanGuess) {
-                humanScore++;
-            } else {
-                aiScore++;
-            }
-        } else {
-            if (currentCard.type === 'Coconut') {
-                revealAreaDiv.innerHTML += "Incorrect! That's a Death by Coconut! -1 point. ";
-                if (isHumanGuess) {
-                    humanScore = Math.max(0, humanScore - 1);
-                } else {
-                    aiScore = Math.max(0, aiScore - 1);
-                }
-            } else { // AorB card incorrect
-                revealAreaDiv.innerHTML += "Incorrect. No points gained or lost. ";
-            }
-        }
-        updateScores(); // Update scores after potential penalty or gain
-        revealAreaDiv.innerHTML += `The answer was ${correctAnswerText}.<br>Explanation: ${currentCard.explanation}`;
-        revealAreaDiv.style.display = 'block';
-
-        hideAnswerButtons();
-        isHumanTurnToGuess = !isHumanTurnToGuess; // Toggle turn
-
-        if (cards.length === 0) {
-            drawCard(); // This will trigger the game over condition (and update readerInfoDiv)
-        } else {
-            if (isHumanTurnToGuess) {
-                readerInfoDiv.textContent = "Your turn to guess. Click 'Draw Card'.";
-            } else {
-                readerInfoDiv.textContent = "AI's turn next. Click 'Draw Card'.";
-            }
-            drawCardBtn.disabled = false; // Allow drawing next card
-        }
-        currentCard = null; // Reset current card after handling answer
-    }
-
-    // Event Listeners
-    drawCardBtn.addEventListener('click', drawCard); // drawCard now handles turn logic
-    btnA.addEventListener('click', () => handleAnswer('A', true)); // True for human guess
-    btnB.addEventListener('click', () => handleAnswer('B', true)); // True for human guess
-    btnMore.addEventListener('click', () => handleAnswer('More', true)); // True for human guess
-    btnLess.addEventListener('click', () => handleAnswer('Less', true)); // True for human guess
-
-    // Initialize Game
-    setupGame();
-
-    function getAIGuess(cardType) {
-        if (cardType === 'AorB') {
-            return Math.random() < 0.5 ? 'A' : 'B';
-        } else if (cardType === 'Coconut') {
-            return Math.random() < 0.5 ? 'More' : 'Less';
-        }
-        return null; // Should not happen with current card data
-    }
+    placeBetBtn.addEventListener('click', resolveRound);
+    nextRoundBtn.addEventListener('click', startNewRound);
 });
