@@ -16,6 +16,29 @@
             <p>Your Tokens This Round: <span id="human-tokens">3</span></p>
         </div>
 
+        <div id="map-display-area">
+            <div class="map-track" id="human-map-track">
+                <p class="map-label">Your Progress:</p>
+                <div class="track-line-container">
+                    <div class="track-line">
+                        <!-- Checkpoints will be added here by JS or CSS -->
+                        <div class="player-marker" id="human-marker">H</div>
+                    </div>
+                </div>
+                <p class="map-position-text" id="human-map-pos-text">0/50</p>
+            </div>
+            <div class="map-track" id="ai-map-track">
+                <p class="map-label">AI's Progress:</p>
+                <div class="track-line-container">
+                    <div class="track-line">
+                        <!-- Checkpoints will be added here by JS or CSS -->
+                        <div class="player-marker" id="ai-marker">A</div>
+                    </div>
+                </div>
+                <p class="map-position-text" id="ai-map-pos-text">0/50</p>
+            </div>
+        </div>
+
         <div id="card-display-area" style="display: flex; justify-content: space-around; margin-bottom: 20px;">
             <!-- Slot 1 -->
             <div class="card-slot" id="card-slot-1">

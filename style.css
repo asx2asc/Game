@@ -20,6 +20,85 @@ body {
     text-align: center;
 }
 
+#map-display-area {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap; /* Allow tracks to wrap on smaller screens if needed */
+    margin-bottom: 25px;
+    background-color: #e9ecef; /* Light grey for map area background */
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.map-track {
+    flex-basis: calc(50% - 20px); /* Two tracks side-by-side, accounting for margin/padding */
+    min-width: 250px; /* Minimum width for a track before wrapping */
+    padding: 15px;
+    background-color: #f8f9fa; /* Lighter background for individual tracks */
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    margin: 5px;
+    box-sizing: border-box;
+}
+
+.map-label {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #495057;
+    font-size: 1.1em;
+}
+
+.track-line-container {
+    width: 100%;
+    background-color: #ffffff; /* White track background */
+    border: 1px solid #ced4da;
+    border-radius: 15px; /* Pill shape */
+    height: 30px;
+    position: relative; /* For positioning markers and checkpoints */
+    margin-bottom: 8px;
+    overflow: hidden; /* Ensures markers don't visually spill out if track is short */
+}
+
+.track-line {
+    /* This div is mostly for semantic structure or if checkpoints are drawn inside it.
+       The .track-line-container handles the visual appearance of the track itself. */
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.player-marker {
+    width: 28px;   /* Slightly less than track height */
+    height: 28px;  /* Slightly less than track height */
+    border-radius: 50%; /* Circular marker */
+    color: white;
+    text-align: center;
+    line-height: 28px; /* Vertically center text 'H' or 'A' */
+    font-weight: bold;
+    font-size: 0.9em;
+    position: absolute;
+    top: 1px;      /* Adjust for vertical centering on the line ( (30-28)/2 ) */
+    left: 0%;      /* Initial position, will be updated by JS based on map position */
+    transition: left 0.5s ease-in-out; /* Smooth movement */
+    z-index: 2; /* Ensure marker is above checkpoints if they are also absolutely positioned */
+}
+
+#human-marker {
+    background-color: #007bff; /* Blue for Human */
+}
+
+#ai-marker {
+    background-color: #dc3545; /* Red for AI */
+}
+
+.map-position-text {
+    font-size: 0.95em;
+    text-align: right; /* Align text to the right below track */
+    color: #495057;
+    margin-top: 5px;
+}
+
+
 #score-board {
     margin-bottom: 20px;
     padding-bottom: 10px;
