@@ -16,12 +16,21 @@
             <p>Your Tokens This Round: <span id="human-tokens">3</span></p>
         </div>
 
+        <div id="player-token-area" style="margin-bottom: 20px; padding: 10px; border: 1px dashed #ccc;">
+            <h3>Your Tokens (Drag to Cards):</h3>
+            <div id="token-pool" style="display: flex; justify-content: center; align-items: center; min-height: 50px;">
+                <!-- Tokens will be added here by JavaScript when a round starts. -->
+                <div class="draggable-token-placeholder" style="width:40px; height:40px; border:1px solid #aaa; margin:5px; text-align:center; line-height:40px;">T1</div>
+                <div class="draggable-token-placeholder" style="width:40px; height:40px; border:1px solid #aaa; margin:5px; text-align:center; line-height:40px;">T2</div>
+                <div class="draggable-token-placeholder" style="width:40px; height:40px; border:1px solid #aaa; margin:5px; text-align:center; line-height:40px;">T3</div>
+            </div>
+        </div>
+
         <div id="map-display-area">
             <div class="map-track" id="human-map-track">
                 <p class="map-label">Your Progress:</p>
                 <div class="track-line-container">
                     <div class="track-line">
-                        <!-- Checkpoints will be added here by JS or CSS -->
                         <div class="player-marker" id="human-marker">H</div>
                     </div>
                 </div>
@@ -31,7 +40,6 @@
                 <p class="map-label">AI's Progress:</p>
                 <div class="track-line-container">
                     <div class="track-line">
-                        <!-- Checkpoints will be added here by JS or CSS -->
                         <div class="player-marker" id="ai-marker">A</div>
                     </div>
                 </div>
@@ -43,36 +51,36 @@
             <!-- Slot 1 -->
             <div class="card-slot" id="card-slot-1">
                 <div class="scenario-text">Scenario 1 will appear here...</div>
+                <div class="dropped-token-indicator" id="dropped-tokens-card-1" style="margin-top:10px; min-height: 20px; border: 1px dotted #eee; padding: 5px;">
+                    Tokens on card: <span class="token-count-on-card" id="token-count-card-1">0</span>
+                    <div class="dropped-tokens-visual-area" style="min-height: 30px;"></div>
+                </div>
                 <div class="casualty-text" style="display: none;">Casualties: ???</div>
             </div>
             <!-- Slot 2 -->
             <div class="card-slot" id="card-slot-2">
                 <div class="scenario-text">Scenario 2 will appear here...</div>
+                <div class="dropped-token-indicator" id="dropped-tokens-card-2" style="margin-top:10px; min-height: 20px; border: 1px dotted #eee; padding: 5px;">
+                    Tokens on card: <span class="token-count-on-card" id="token-count-card-2">0</span>
+                    <div class="dropped-tokens-visual-area" style="min-height: 30px;"></div>
+                </div>
                 <div class="casualty-text" style="display: none;">Casualties: ???</div>
             </div>
             <!-- Slot 3 -->
             <div class="card-slot" id="card-slot-3">
                 <div class="scenario-text">Scenario 3 will appear here...</div>
+                <div class="dropped-token-indicator" id="dropped-tokens-card-3" style="margin-top:10px; min-height: 20px; border: 1px dotted #eee; padding: 5px;">
+                    Tokens on card: <span class="token-count-on-card" id="token-count-card-3">0</span>
+                    <div class="dropped-tokens-visual-area" style="min-height: 30px;"></div>
+                </div>
                 <div class="casualty-text" style="display: none;">Casualties: ???</div>
             </div>
         </div>
 
         <div id="player-controls">
             <h2>Place Your Bet:</h2>
-            <fieldset id="card-choice-fieldset">
-                <legend>Choose a Card to Bet On:</legend>
-                <label><input type="radio" name="card-choice" value="1" checked> Card 1</label>
-                <label><input type="radio" name="card-choice" value="2"> Card 2</label>
-                <label><input type="radio" name="card-choice" value="3"> Card 3</label>
-            </fieldset>
-
-            <fieldset id="token-choice-fieldset">
-                <legend>Tokens to Bet (1-3):</legend>
-                <label><input type="radio" name="token-amount" value="1" checked> 1 Token</label>
-                <label><input type="radio" name="token-amount" value="2"> 2 Tokens</label>
-                <label><input type="radio" name="token-amount" value="3"> 3 Tokens</label>
-            </fieldset>
-
+            <!-- Fieldsets for card choice and token amount removed -->
+            <!-- Instruction paragraphs for number inputs removed -->
             <button id="place-bet-btn">Place Bet</button>
         </div>
 
