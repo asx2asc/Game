@@ -1,0 +1,132 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to top to see content if it grows */
+    min-height: 100vh;
+    background-color: #f4f7f6;
+    margin: 20px; /* Add some margin around the body */
+}
+
+#game-container {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 90%;
+    max-width: 600px; /* Max width for larger screens */
+}
+
+#reader-info {
+    margin-bottom: 20px;
+    font-style: italic;
+    color: #333;
+    font-size: 1.1em;
+}
+
+#question-area {
+    margin-bottom: 20px;
+}
+
+#question-area div { /* Styling for scenario divs */
+    margin-bottom: 12px;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 1.1em; /* Slightly larger text for scenarios */
+    line-height: 1.6;
+}
+
+#scenario-a, #scenario-b {
+    background-color: #e9f5ff; /* Light blue */
+    color: #31708f; /* Darker blue text */
+}
+
+#coconut-scenario {
+    background-color: #fff9e6; /* Light yellow */
+    color: #8a6d3b; /* Darker yellow/brown text */
+}
+
+#answer-options {
+    margin-bottom: 25px;
+}
+
+#answer-options button {
+    margin: 8px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #007bff; /* Primary blue */
+    color: white;
+    font-size: 1em;
+    transition: background-color 0.2s ease;
+}
+
+#answer-options button:hover {
+    background-color: #0056b3; /* Darker blue */
+}
+
+#answer-options button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+
+#reveal-area {
+    margin-top: 25px;
+    padding: 15px;
+    background-color: #dff0d8; /* Light green for correct/reveal */
+    border: 1px solid #d6e9c6;
+    border-radius: 6px;
+    color: #3c763d; /* Dark green text */
+    font-size: 1.05em;
+    line-height: 1.6;
+}
+
+#score-area {
+    margin-top: 25px;
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #555;
+}
+
+#score-area p {
+    margin: 5px 0;
+}
+
+#draw-card-btn {
+    margin-top: 25px;
+    padding: 12px 25px;
+    background-color: #28a745; /* Green */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.2s ease;
+}
+
+#draw-card-btn:hover {
+    background-color: #218838; /* Darker green */
+}
+
+#draw-card-btn:disabled {
+    background-color: #94d3a2;
+    cursor: not-allowed;
+}
+
+
+/* Initially hide elements that should only appear based on card type or game state */
+#question-area, /* Hide the entire question area initially */
+#scenario-a,
+#scenario-b,
+#coconut-scenario,
+#reveal-area,
+#btn-a, /* Hiding individual buttons now handled by JS based on card type */
+#btn-b,
+#btn-more,
+#btn-less {
+    display: none;
+}
