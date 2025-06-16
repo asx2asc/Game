@@ -72,10 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     let currentCard = null; // Will store the card object, not just index
-    let readerPlayer = 1; // Player 1 starts as the Reader
-    let guesserPlayer = 2; // Player 2 starts as the Guesser
-    let player1Score = 0;
-    let player2Score = 0;
+    let humanScore = 0;
+    let aiScore = 0;
+    let isHumanTurnToGuess = true; // true for human, false for AI
 
     // DOM Elements
     const readerInfoDiv = document.getElementById('reader-info');
@@ -88,14 +87,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnMore = document.getElementById('btn-more'); // Text: More Likely
     const btnLess = document.getElementById('btn-less'); // Text: Less Likely
     const revealAreaDiv = document.getElementById('reveal-area');
-    const player1ScoreSpan = document.getElementById('player1-score');
-    const player2ScoreSpan = document.getElementById('player2-score');
+    const player1ScoreSpan = document.getElementById('player1-score'); // Will be updated to humanScoreSpan later if needed by ID
+    const player2ScoreSpan = document.getElementById('player2-score'); // Will be updated to aiScoreSpan later if needed by ID
     const drawCardBtn = document.getElementById('draw-card-btn');
     // const answerOptionsDiv = document.getElementById('answer-options'); // Not strictly needed if buttons are manipulated directly
 
     function updateScores() {
-        player1ScoreSpan.textContent = player1Score;
-        player2ScoreSpan.textContent = player2Score;
+        player1ScoreSpan.textContent = humanScore; // HTML ID is player1-score
+        player2ScoreSpan.textContent = aiScore;   // HTML ID is player2-score
     }
 
     function hideAllScenarios() {
@@ -114,7 +113,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function setupGame() {
         updateScores();
-        readerInfoDiv.textContent = `Player ${readerPlayer} is the Reader. Player ${guesserPlayer} guesses.`;
+        isHumanTurnToGuess = true; // Human starts
+        readerInfoDiv.textContent = "Your turn to guess. Click 'Draw Card'.";
         drawCardBtn.disabled = false;
         hideAllScenarios();
         hideAnswerButtons();
@@ -123,13 +123,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function drawCard() {
         if (cards.length === 0) {
-            readerInfoDiv.textContent = "No more cards! Game Over.";
-            if (player1Score > player2Score) {
-                revealAreaDiv.textContent = `Player 1 Wins! ${player1Score} to ${player2Score}`;
-            } else if (player2Score > player1Score) {
-                revealAreaDiv.textContent = `Player 2 Wins! ${player2Score} to ${player1Score}`;
+            readerInfoDiv.textContent = "Game Over!";
+            // Final winner text is already fine
+            if (humanScore > aiScore) {
+                revealAreaDiv.textContent = `Human Wins! ${humanScore} to ${aiScore}`;
+            } else if (aiScore > humanScore) {
+                revealAreaDiv.textContent = `AI Wins! ${aiScore} to ${humanScore}`;
             } else {
-                revealAreaDiv.textContent = `It's a Tie! ${player1Score} to ${player2Score}`;
+                revealAreaDiv.textContent = `It's a Tie! ${humanScore} to ${aiScore}`;
             }
             revealAreaDiv.style.display = 'block';
             drawCardBtn.disabled = true;
@@ -140,33 +141,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const cardIndex = Math.floor(Math.random() * cards.length);
         currentCard = cards[cardIndex];
-        cards.splice(cardIndex, 1); // Remove card from deck so it's not drawn again
+        cards.splice(cardIndex, 1); // Remove card from deck
 
         console.log("Drawn card:", currentCard);
-        hideAllScenarios(); // Clear previous card
+        hideAllScenarios();
         hideAnswerButtons();
         revealAreaDiv.style.display = 'none';
-        questionAreaDiv.style.display = 'block'; // Show the question area
+        questionAreaDiv.style.display = 'block';
+        drawCardBtn.disabled = true; // Disable until choice is made or AI has chosen
 
-        if (currentCard.type === 'AorB') {
-            scenarioADiv.textContent = "A: " + currentCard.scenarioA;
-            scenarioBDiv.textContent = "B: " + currentCard.scenarioB;
-            scenarioADiv.style.display = 'block';
-            scenarioBDiv.style.display = 'block';
-            btnA.style.display = 'inline-block';
-            btnB.style.display = 'inline-block';
-        } else if (currentCard.type === 'Coconut') {
-            coconutScenarioDiv.textContent = currentCard.coconutScenario;
-            coconutScenarioDiv.style.display = 'block';
-            btnMore.style.display = 'inline-block';
-            btnLess.style.display = 'inline-block';
+        if (isHumanTurnToGuess) {
+            readerInfoDiv.textContent = "Your turn: Read the scenarios and make your choice.";
+            if (currentCard.type === 'AorB') {
+                scenarioADiv.textContent = "A: " + currentCard.scenarioA;
+                scenarioBDiv.textContent = "B: " + currentCard.scenarioB;
+                scenarioADiv.style.display = 'block';
+                scenarioBDiv.style.display = 'block';
+                btnA.style.display = 'inline-block';
+                btnB.style.display = 'inline-block';
+            } else if (currentCard.type === 'Coconut') {
+                coconutScenarioDiv.textContent = currentCard.coconutScenario;
+                coconutScenarioDiv.style.display = 'block';
+                btnMore.style.display = 'inline-block';
+                btnLess.style.display = 'inline-block';
+            }
+        } else { // AI's turn
+            readerInfoDiv.textContent = "AI is thinking...";
+            // Display the question for AI too (optional, but good for transparency)
+             if (currentCard.type === 'AorB') {
+                scenarioADiv.textContent = "A: " + currentCard.scenarioA;
+                scenarioBDiv.textContent = "B: " + currentCard.scenarioB;
+                scenarioADiv.style.display = 'block';
+                scenarioBDiv.style.display = 'block';
+            } else if (currentCard.type === 'Coconut') {
+                coconutScenarioDiv.textContent = currentCard.coconutScenario;
+                coconutScenarioDiv.style.display = 'block';
+            }
+            // AI makes a guess after a short delay for effect
+            setTimeout(() => {
+                const aiGuess = getAIGuess(currentCard.type);
+                handleAnswer(aiGuess, false); // Pass AI's guess and isHumanGuess = false
+            }, 1500); // 1.5 second delay
         }
-        drawCardBtn.disabled = true;
-        readerInfoDiv.textContent = `Player ${guesserPlayer} is guessing. (Reader: Player ${readerPlayer})`;
     }
 
-    function handleAnswer(choice) {
-        if (!currentCard) return; // No card active
+    function handleAnswer(choice, isHumanGuess) { // Added isHumanGuess parameter
+        if (!currentCard) return;
 
         let correct = false;
         let correctAnswerText = "";
@@ -180,24 +200,26 @@ document.addEventListener('DOMContentLoaded', () => {
             correctAnswerText = currentCard.answerMoreLikely ? "More Likely" : "Less Likely";
         }
 
-        revealAreaDiv.innerHTML = `The Guesser chose: ${choice}.<br>`;
+        const chosenBy = isHumanGuess ? "You" : "AI";
+        revealAreaDiv.innerHTML = `${chosenBy} chose: ${choice}.<br>`;
+
         if (correct) {
-            revealAreaDiv.innerHTML += "Correct! ";
-            if (guesserPlayer === 1) {
-                player1Score++;
+            revealAreaDiv.innerHTML += "Correct! +1 point. ";
+            if (isHumanGuess) {
+                humanScore++;
             } else {
-                player2Score++;
+                aiScore++;
             }
         } else {
             if (currentCard.type === 'Coconut') {
                 revealAreaDiv.innerHTML += "Incorrect! That's a Death by Coconut! -1 point. ";
-                if (guesserPlayer === 1) {
-                    player1Score = Math.max(0, player1Score - 1);
+                if (isHumanGuess) {
+                    humanScore = Math.max(0, humanScore - 1);
                 } else {
-                    player2Score = Math.max(0, player2Score - 1);
+                    aiScore = Math.max(0, aiScore - 1);
                 }
             } else { // AorB card incorrect
-                revealAreaDiv.innerHTML += "Incorrect. ";
+                revealAreaDiv.innerHTML += "Incorrect. No points gained or lost. ";
             }
         }
         updateScores(); // Update scores after potential penalty or gain
@@ -205,28 +227,37 @@ document.addEventListener('DOMContentLoaded', () => {
         revealAreaDiv.style.display = 'block';
 
         hideAnswerButtons();
-
-        // Switch roles
-        let temp = readerPlayer;
-        readerPlayer = guesserPlayer;
-        guesserPlayer = temp;
+        isHumanTurnToGuess = !isHumanTurnToGuess; // Toggle turn
 
         if (cards.length === 0) {
-            drawCard(); // This will trigger the game over condition
+            drawCard(); // This will trigger the game over condition (and update readerInfoDiv)
         } else {
-            readerInfoDiv.textContent = `Player ${readerPlayer} is the Reader. Player ${guesserPlayer} guesses. Click "Draw Card".`;
-            drawCardBtn.disabled = false;
+            if (isHumanTurnToGuess) {
+                readerInfoDiv.textContent = "Your turn to guess. Click 'Draw Card'.";
+            } else {
+                readerInfoDiv.textContent = "AI's turn next. Click 'Draw Card'.";
+            }
+            drawCardBtn.disabled = false; // Allow drawing next card
         }
         currentCard = null; // Reset current card after handling answer
     }
 
     // Event Listeners
-    drawCardBtn.addEventListener('click', drawCard);
-    btnA.addEventListener('click', () => handleAnswer('A'));
-    btnB.addEventListener('click', () => handleAnswer('B'));
-    btnMore.addEventListener('click', () => handleAnswer('More'));
-    btnLess.addEventListener('click', () => handleAnswer('Less'));
+    drawCardBtn.addEventListener('click', drawCard); // drawCard now handles turn logic
+    btnA.addEventListener('click', () => handleAnswer('A', true)); // True for human guess
+    btnB.addEventListener('click', () => handleAnswer('B', true)); // True for human guess
+    btnMore.addEventListener('click', () => handleAnswer('More', true)); // True for human guess
+    btnLess.addEventListener('click', () => handleAnswer('Less', true)); // True for human guess
 
     // Initialize Game
     setupGame();
+
+    function getAIGuess(cardType) {
+        if (cardType === 'AorB') {
+            return Math.random() < 0.5 ? 'A' : 'B';
+        } else if (cardType === 'Coconut') {
+            return Math.random() < 0.5 ? 'More' : 'Less';
+        }
+        return null; // Should not happen with current card data
+    }
 });
