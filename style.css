@@ -1,18 +1,19 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: flex-start; /* Align to top to see content if it grows */
     min-height: 100vh;
-    background-color: #f4f7f6;
+    background-color: #8B4513; /* SaddleBrown - wood-like color */
     margin: 20px; /* Add some margin around the body */
+    /* color: #FFFFFF; /* Optional: for text directly on body */
 }
 
 #game-container {
-    background-color: #ffffff;
+    background-color: #FAF0E6; /* Linen - game mat/paper */
     padding: 25px;
     border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25); /* More pronounced shadow */
     text-align: center;
     width: 90%;
     max-width: 600px; /* Max width for larger screens */
@@ -26,26 +27,51 @@ body {
 }
 
 #question-area {
-    margin-bottom: 20px;
+    background-color: #fdf5e6; /* Light cream - old paper/card */
+    border: 1px solid #d2b48c; /* Tan/brownish border */
+    border-radius: 10px;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.2); /* Lifted effect */
+    padding-top: 45px; /* Adjusted for the ::before header */
+    padding-right: 20px;
+    padding-bottom: 20px;
+    padding-left: 20px;
+    margin-bottom: 20px; /* Ensure margin is present */
+    position: relative; /* For ::before pseudo-element positioning */
+    /* display: none; /* JS will toggle this to 'block' when a card is drawn */
 }
 
-#question-area div { /* Styling for scenario divs */
-    margin-bottom: 12px;
-    padding: 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    font-size: 1.1em; /* Slightly larger text for scenarios */
+#question-area::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 30px; /* Height of the decorative header bar */
+    background-color: #c9ae7e; /* Slightly darker tan/brown */
+    border-bottom: 1px solid #b89b70; /* Subtle separator line */
+    border-radius: 10px 10px 0 0; /* Match top rounded corners */
+}
+
+#question-area div { /* Common styling for scenario divs within question-area */
+    margin-bottom: 10px; /* Spacing for scenarios */
+    padding: 10px;       /* Adjusted padding */
+    border-radius: 6px;  /* Ensure rounded corners */
+    font-size: 1.1em;
     line-height: 1.6;
+    /* border: 1px solid #e0e0e0; /* Removing individual borders from here if question-area has its own */
 }
 
 #scenario-a, #scenario-b {
-    background-color: #e9f5ff; /* Light blue */
-    color: #31708f; /* Darker blue text */
+    background-color: #e9f5ff; /* Light blue - kept */
+    color: #31708f; /* Darker blue text - kept */
+    /* padding and border-radius moved to #question-area div common style or are defaults */
 }
 
 #coconut-scenario {
-    background-color: #fff9e6; /* Light yellow */
-    color: #8a6d3b; /* Darker yellow/brown text */
+    background-color: #fff9e6; /* Light yellow - kept */
+    color: #8a6d3b; /* Darker yellow/brown text - kept */
+    /* padding and border-radius moved to #question-area div common style or are defaults */
 }
 
 #answer-options {
@@ -53,36 +79,80 @@ body {
 }
 
 #answer-options button {
-    margin: 8px;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: #007bff; /* Primary blue */
+    width: 70px;
+    height: 70px;
+    border-radius: 50%; /* Circular */
+    padding: 0; /* Remove existing padding */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9em; /* Adjust as needed */
+    font-weight: bold;
     color: white;
-    font-size: 1em;
-    transition: background-color 0.2s ease;
+    border: 2px solid white; /* Contrasting border */
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3); /* Subtle 3D effect */
+    margin: 8px;
+    cursor: pointer;
+    transition: filter 0.2s ease, background-color 0.2s ease; /* Added filter transition */
+    /* background-color will be set by specific IDs */
+}
+
+#btn-a {
+    background-color: #d9534f; /* Red */
+}
+
+#btn-b {
+    background-color: #428bca; /* Blue */
+}
+
+#btn-more {
+    background-color: #5cb85c; /* Green */
+}
+
+#btn-less {
+    background-color: #f0ad4e; /* Orange/Yellow */
 }
 
 #answer-options button:hover {
-    background-color: #0056b3; /* Darker blue */
+    filter: brightness(90%);
 }
 
 #answer-options button:disabled {
     background-color: #cccccc;
     cursor: not-allowed;
+    filter: brightness(100%); /* Ensure disabled doesn't get darkened by hover state if it shares it */
+    color: #777; /* Darker grey text on light grey background for disabled */
+    border-color: #bbb; /* Slightly darker border for disabled */
 }
 
-
 #reveal-area {
-    margin-top: 25px;
-    padding: 15px;
-    background-color: #dff0d8; /* Light green for correct/reveal */
-    border: 1px solid #d6e9c6;
-    border-radius: 6px;
-    color: #3c763d; /* Dark green text */
-    font-size: 1.05em;
-    line-height: 1.6;
+    background-color: #e6f5fd; /* Very light blue */
+    border: 1px solid #a0c7e0; /* Soft blue border */
+    border-radius: 10px;       /* Consistent with question card */
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.15); /* Softer shadow */
+    color: #28527a;            /* Darker, readable blue */
+    padding-top: 40px;         /* Adjusted for the ::before header */
+    padding-right: 20px;
+    padding-bottom: 20px;
+    padding-left: 20px;
+    margin-top: 25px;          /* Keep existing margin-top */
+    font-size: 1.05em;         /* Keep existing font-size */
+    line-height: 1.6;          /* Keep existing line-height */
+    position: relative;        /* For ::before pseudo-element positioning */
+    /* display: none; is handled by the generic rule later */
+}
+
+#reveal-area::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 25px; /* Height of the decorative header bar */
+    background-color: #8bb9d4; /* Slightly darker, desaturated blue */
+    border-bottom: 1px solid #7ba9c4; /* Subtle separator line */
+    border-radius: 10px 10px 0 0; /* Match top rounded corners */
 }
 
 #score-area {
@@ -119,14 +189,14 @@ body {
 
 
 /* Initially hide elements that should only appear based on card type or game state */
-#question-area, /* Hide the entire question area initially */
+#question-area, /* JS will toggle this to 'block'. Hiding it by default. */
 #scenario-a,
 #scenario-b,
 #coconut-scenario,
 #reveal-area,
-#btn-a, /* Hiding individual buttons now handled by JS based on card type */
+#btn-a,
 #btn-b,
 #btn-more,
 #btn-less {
-    display: none;
+    display: none; /* All these are controlled by JS for visibility */
 }
