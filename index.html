@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casualty Betting Game</title>
+    <link rel="stylesheet" href="style.css"> <!-- We'll create/update this later -->
+</head>
+<body>
+    <div id="game-container">
+        <h1>Casualty Betting Game</h1>
+
+        <div id="score-board">
+            <p>Your Score: <span id="human-score">0</span></p>
+            <p>AI Score: <span id="ai-score">0</span></p>
+            <p>Your Tokens This Round: <span id="human-tokens">3</span></p>
+        </div>
+
+        <div id="player-token-area" style="margin-bottom: 20px; padding: 10px; border: 1px dashed #ccc;">
+            <h3>Your Tokens (Drag to Cards):</h3>
+            <div id="token-pool" style="display: flex; justify-content: center; align-items: center; min-height: 50px;">
+                <!-- Tokens will be added here by JavaScript when a round starts. -->
+                <div class="draggable-token-placeholder" style="width:40px; height:40px; border:1px solid #aaa; margin:5px; text-align:center; line-height:40px;">T1</div>
+                <div class="draggable-token-placeholder" style="width:40px; height:40px; border:1px solid #aaa; margin:5px; text-align:center; line-height:40px;">T2</div>
+                <div class="draggable-token-placeholder" style="width:40px; height:40px; border:1px solid #aaa; margin:5px; text-align:center; line-height:40px;">T3</div>
+            </div>
+        </div>
+
+        <div id="map-display-area">
+            <div class="map-track" id="human-map-track">
+                <p class="map-label">Your Progress:</p>
+                <div class="track-line-container">
+                    <div class="track-line">
+                        <div class="player-marker" id="human-marker">H</div>
+                    </div>
+                </div>
+                <p class="map-position-text" id="human-map-pos-text">0/50</p>
+            </div>
+            <div class="map-track" id="ai-map-track">
+                <p class="map-label">AI's Progress:</p>
+                <div class="track-line-container">
+                    <div class="track-line">
+                        <div class="player-marker" id="ai-marker">A</div>
+                    </div>
+                </div>
+                <p class="map-position-text" id="ai-map-pos-text">0/50</p>
+            </div>
+        </div>
+
+        <div id="card-display-area" style="display: flex; justify-content: space-around; margin-bottom: 20px;">
+            <!-- Slot 1 -->
+            <div class="card-slot" id="card-slot-1">
+                <div class="scenario-text">Scenario 1 will appear here...</div>
+                <div class="dropped-token-indicator" id="dropped-tokens-card-1" style="margin-top:10px; min-height: 20px; border: 1px dotted #eee; padding: 5px;">
+                    Tokens on card: <span class="token-count-on-card" id="token-count-card-1">0</span>
+                    <div class="dropped-tokens-visual-area" style="min-height: 30px;"></div>
+                </div>
+                <div class="casualty-text" style="display: none;">Casualties: ???</div>
+            </div>
+            <!-- Slot 2 -->
+            <div class="card-slot" id="card-slot-2">
+                <div class="scenario-text">Scenario 2 will appear here...</div>
+                <div class="dropped-token-indicator" id="dropped-tokens-card-2" style="margin-top:10px; min-height: 20px; border: 1px dotted #eee; padding: 5px;">
+                    Tokens on card: <span class="token-count-on-card" id="token-count-card-2">0</span>
+                    <div class="dropped-tokens-visual-area" style="min-height: 30px;"></div>
+                </div>
+                <div class="casualty-text" style="display: none;">Casualties: ???</div>
+            </div>
+            <!-- Slot 3 -->
+            <div class="card-slot" id="card-slot-3">
+                <div class="scenario-text">Scenario 3 will appear here...</div>
+                <div class="dropped-token-indicator" id="dropped-tokens-card-3" style="margin-top:10px; min-height: 20px; border: 1px dotted #eee; padding: 5px;">
+                    Tokens on card: <span class="token-count-on-card" id="token-count-card-3">0</span>
+                    <div class="dropped-tokens-visual-area" style="min-height: 30px;"></div>
+                </div>
+                <div class="casualty-text" style="display: none;">Casualties: ???</div>
+            </div>
+        </div>
+
+        <div id="player-controls">
+            <h2>Place Your Bet:</h2>
+            <!-- Fieldsets for card choice and token amount removed -->
+            <!-- Instruction paragraphs for number inputs removed -->
+            <button id="place-bet-btn">Place Bet</button>
+        </div>
+
+        <div id="ai-bet-display" style="margin-top: 15px;">
+            <p>AI is thinking...</p>
+            <!-- AI's bet will be shown here by JS, e.g., "AI bets X tokens on Card Y" -->
+        </div>
+
+        <div id="results-area" style="margin-top: 20px;">
+            <h2>Results:</h2>
+            <p id="round-outcome-message">Round outcome will be shown here.</p>
+        </div>
+
+        <button id="next-round-btn" style="margin-top: 20px; display: none;">Start Next Round</button>
+
+        <!-- For compatibility with the script generated by the previous subtask,
+             although it's for a 2-card game and will need heavy adaptation.
+             We can hide these or remove them once the new 3-card logic is in.
+             For now, let's add them but hidden. -->
+        <div id="card-area-1" style="display:none;">
+            <div class="scenario-text"></div><div class="casualty-count"></div>
+        </div>
+        <div id="card-area-2" style="display:none;">
+            <div class="scenario-text"></div><div class="casualty-count"></div>
+        </div>
+        <button id="bet-on-card-1" style="display:none;">Bet on Card 1</button>
+        <button id="bet-on-card-2" style="display:none;">Bet on Card 2</button>
+        <button id="deal-cards-btn" style="display:none;">Deal New Cards (Old)</button>
+        <span id="player-score" style="display:none;">0</span>
+        <div id="message-area" style="display:none;">Old messages</div>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
