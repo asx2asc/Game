@@ -1,118 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Casualty Betting Game</title>
-    <link rel="stylesheet" href="style.css"> <!-- We'll create/update this later -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Death by Coconuts - Casualty Betting Game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Bangers&family=Luckiest+Guy&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="game-container">
-        <h1>Casualty Betting Game</h1>
 
-        <div id="score-board">
-            <p>Your Score: <span id="human-score">0</span></p>
-            <p>AI Score: <span id="ai-score">0</span></p>
-            <p>Your Tokens This Round: <span id="human-tokens">3</span></p>
+<div id="app-container">
+
+    <!-- Phase 0: Main Menu Screen -->
+    <div id="main-menu-screen">
+        <div class="main-menu-background"></div>
+        <img src="assets/images/logo_death_by_coconuts.svg" alt="Death by Coconuts Logo" id="game-logo"> <!-- USE ACTUAL LOGO -->
+        <div class="menu-buttons">
+            <button id="start-new-game-btn" class="menu-button">START NEW GAME</button>
+            <button id="how-to-play-btn" class="menu-button">HOW TO PLAY</button>
+            <button id="settings-btn" class="menu-button">SETTINGS</button>
+            <button id="quit-btn" class="menu-button">QUIT</button>
         </div>
 
-        <div id="player-token-area" style="margin-bottom: 20px; padding: 10px; border: 1px dashed #ccc;">
-            <h3>Your Tokens (Drag to Cards):</h3>
-            <div id="token-pool" style="display: flex; justify-content: center; align-items: center; min-height: 50px;">
-                <!-- Tokens will be added here by JavaScript when a round starts. -->
-                <div class="draggable-token-placeholder" style="width:40px; height:40px; border:1px solid #aaa; margin:5px; text-align:center; line-height:40px;">T1</div>
-                <div class="draggable-token-placeholder" style="width:40px; height:40px; border:1px solid #aaa; margin:5px; text-align:center; line-height:40px;">T2</div>
-                <div class="draggable-token-placeholder" style="width:40px; height:40px; border:1px solid #aaa; margin:5px; text-align:center; line-height:40px;">T3</div>
+        <!-- Optional Pawn Customization UI -->
+        <div id="pawn-customization-ui" style="display:none; margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 10px; color:white;">
+            <h4>Customize Your Pawn</h4>
+            <div class="pawn-options">
+                Shape:
+                <button class="pawn-option-btn pawn-shape-btn selected" data-shape="default" data-shape-char="H">Classic</button>
+                <button class="pawn-option-btn pawn-shape-btn" data-shape="skull" data-shape-char="ðŸ’€" data-shape-img="assets/pawns/pawn_user_skull.png">Skull</button>
+                <button class="pawn-option-btn pawn-shape-btn" data-shape="coconut" data-shape-char="ðŸ¥¥" data-shape-img="assets/pawns/pawn_user_coconut.png">Coconut</button>
+            </div>
+            <div class="pawn-options" style="margin-top:10px;">
+                Color:
+                <button class="pawn-option-btn pawn-color-btn selected" data-color="#007bff" style="background-color:#007bff;"></button>
+                <button class="pawn-option-btn pawn-color-btn" data-color="#28a745" style="background-color:#28a745;"></button>
+                <button class="pawn-option-btn pawn-color-btn" data-color="#ffc107" style="background-color:#ffc107;"></button>
+                <button class="pawn-option-btn pawn-color-btn" data-color="#dc3545" style="background-color:#dc3545;"></button>
+            </div>
+            <div id="pawn-preview-area" style="margin-top:10px;">
+                Preview: <span id="pawn-preview-marker" class="player-marker" style="background-color: #007bff; position:relative; display:inline-flex; top:0; left:0; vertical-align:middle;">H</span>
             </div>
         </div>
 
-        <div id="map-display-area">
-            <div class="map-track" id="human-map-track">
-                <p class="map-label">Your Progress:</p>
-                <div class="track-line-container">
-                    <div class="track-line">
-                        <div class="player-marker" id="human-marker">H</div>
-                    </div>
-                </div>
-                <p class="map-position-text" id="human-map-pos-text">0/50</p>
-            </div>
-            <div class="map-track" id="ai-map-track">
-                <p class="map-label">AI's Progress:</p>
-                <div class="track-line-container">
-                    <div class="track-line">
-                        <div class="player-marker" id="ai-marker">A</div>
-                    </div>
-                </div>
-                <p class="map-position-text" id="ai-map-pos-text">0/50</p>
-            </div>
+        <!-- Optional AI Opponent Selection UI -->
+        <div id="ai-selection-ui" style="display:none; margin-top:15px; padding:10px; background:rgba(0,0,0,0.15); border-radius:8px; color:white;">
+            AI Opponent:
+            <select id="ai-personality-select" class="menu-select">
+                <option value="average">Average Joe</option>
+                <option value="cautious">Cautious Carl</option>
+                <option value="risky">Risky Rita</option>
+            </select>
+            <!-- Number of AI slider (cosmetic for now, as game logic supports 1 AI) -->
+            <!-- <label for="ai-count">AI Players: 1</label> <input type="range" id="ai-count" min="1" max="1" value="1" class="menu-slider"> -->
         </div>
-
-        <div id="card-display-area" style="display: flex; justify-content: space-around; margin-bottom: 20px;">
-            <!-- Slot 1 -->
-            <div class="card-slot" id="card-slot-1">
-                <div class="scenario-text">Scenario 1 will appear here...</div>
-                <div class="dropped-token-indicator" id="dropped-tokens-card-1" style="margin-top:10px; min-height: 20px; border: 1px dotted #eee; padding: 5px;">
-                    Tokens on card: <span class="token-count-on-card" id="token-count-card-1">0</span>
-                    <div class="dropped-tokens-visual-area" style="min-height: 30px;"></div>
-                </div>
-                <div class="casualty-text" style="display: none;">Casualties: ???</div>
-            </div>
-            <!-- Slot 2 -->
-            <div class="card-slot" id="card-slot-2">
-                <div class="scenario-text">Scenario 2 will appear here...</div>
-                <div class="dropped-token-indicator" id="dropped-tokens-card-2" style="margin-top:10px; min-height: 20px; border: 1px dotted #eee; padding: 5px;">
-                    Tokens on card: <span class="token-count-on-card" id="token-count-card-2">0</span>
-                    <div class="dropped-tokens-visual-area" style="min-height: 30px;"></div>
-                </div>
-                <div class="casualty-text" style="display: none;">Casualties: ???</div>
-            </div>
-            <!-- Slot 3 -->
-            <div class="card-slot" id="card-slot-3">
-                <div class="scenario-text">Scenario 3 will appear here...</div>
-                <div class="dropped-token-indicator" id="dropped-tokens-card-3" style="margin-top:10px; min-height: 20px; border: 1px dotted #eee; padding: 5px;">
-                    Tokens on card: <span class="token-count-on-card" id="token-count-card-3">0</span>
-                    <div class="dropped-tokens-visual-area" style="min-height: 30px;"></div>
-                </div>
-                <div class="casualty-text" style="display: none;">Casualties: ???</div>
-            </div>
-        </div>
-
-        <div id="player-controls">
-            <h2>Place Your Bet:</h2>
-            <!-- Fieldsets for card choice and token amount removed -->
-            <!-- Instruction paragraphs for number inputs removed -->
-            <button id="place-bet-btn">Place Bet</button>
-        </div>
-
-        <div id="ai-bet-display" style="margin-top: 15px;">
-            <p>AI is thinking...</p>
-            <!-- AI's bet will be shown here by JS, e.g., "AI bets X tokens on Card Y" -->
-        </div>
-
-        <div id="results-area" style="margin-top: 20px;">
-            <h2>Results:</h2>
-            <p id="round-outcome-message">Round outcome will be shown here.</p>
-        </div>
-
-        <button id="next-round-btn" style="margin-top: 20px; display: none;">Start Next Round</button>
-
-        <!-- For compatibility with the script generated by the previous subtask,
-             although it's for a 2-card game and will need heavy adaptation.
-             We can hide these or remove them once the new 3-card logic is in.
-             For now, let's add them but hidden. -->
-        <div id="card-area-1" style="display:none;">
-            <div class="scenario-text"></div><div class="casualty-count"></div>
-        </div>
-        <div id="card-area-2" style="display:none;">
-            <div class="scenario-text"></div><div class="casualty-count"></div>
-        </div>
-        <button id="bet-on-card-1" style="display:none;">Bet on Card 1</button>
-        <button id="bet-on-card-2" style="display:none;">Bet on Card 2</button>
-        <button id="deal-cards-btn" style="display:none;">Deal New Cards (Old)</button>
-        <span id="player-score" style="display:none;">0</span>
-        <div id="message-area" style="display:none;">Old messages</div>
-
     </div>
-    <script src="script.js"></script>
+
+    <!-- Game Screen (now wraps the original #game-container) -->
+    <div id="game-screen" style="display: none;">
+        <div id="game-container">
+            <!-- Information/Message Bar -->
+            <div id="info-message-bar">
+                <p>Welcome to the Game! Round 1 starting...</p>
+            </div>
+
+            <h1>Casualty Betting Game</h1>
+
+            <!-- Score Board - Updated for map positions -->
+            <div id="score-board">
+                <p>Your Position: <span id="human-score-pos">0</span>/<span class="map-total-spaces">50</span></p>
+                <p>AI Position: <span id="ai-score-pos">0</span>/<span class="map-total-spaces">50</span></p>
+                <p>Your Tokens in Pool: <span id="human-tokens">3</span></p>
+            </div>
+
+            <!-- AI Player Status Area -->
+            <div id="ai-player-status-area">
+                <div class="ai-player-panel" id="ai-panel-1"> <!-- JS can add class like 'ai-type-robot' for themed border -->
+                    <img src="assets/avatars/ai_robot_neutral.png" alt="AI Avatar" class="ai-avatar"> <!-- USE ACTUAL AVATAR -->
+                    <div class="ai-name">Robo-Betty</div>
+                    <div class="ai-pawn-miniature" id="ai-pawn-miniature-1">A</div> <!-- JS updates this with AI pawn visual -->
+                    <div class="ai-bet-indicator" style="display: none;">?</div>
+                    <div class="ai-bet-result-icon" style="display:none;"></div>
+                </div>
+            </div>
+
+            <!-- Player Hand/Betting Interface (User's Command Center) -->
+            <div id="player-token-area" class="user-command-center">
+                <h3>Your Tokens (Drag to Cards):</h3>
+                <div id="token-pool">
+                    <!-- Tokens with holsters will be added here by JavaScript. -->
+                </div>
+            </div>
+
+            <!-- Game Board Area (Map Display) -->
+            <div id="map-display-area" class="game-board-surface">
+                <div class="map-track" id="human-map-track">
+                    <div class="map-space map-space-start">START</div>
+                    <p class="map-label">Your Progress:</p>
+                    <div class="track-line-container">
+                        <div class="track-line">
+                            <div class="player-marker" id="human-marker">H</div>
+                            <!-- JS/CSS will handle checkpoint visuals within .track-line -->
+                        </div>
+                    </div>
+                    <p class="map-position-text" id="human-map-pos-text">0/50</p>
+                    <div class="map-space map-space-finish">FINISH</div>
+                </div>
+                <div class="map-track" id="ai-map-track">
+                     <div class="map-space map-space-start">START</div>
+                    <p class="map-label">AI's Progress:</p>
+                    <div class="track-line-container">
+                        <div class="track-line">
+                            <div class="player-marker" id="ai-marker">A</div>
+                        </div>
+                    </div>
+                    <p class="map-position-text" id="ai-map-pos-text">0/50</p>
+                    <div class="map-space map-space-finish">FINISH</div>
+                </div>
+            </div>
+
+            <!-- Question Card Area ("The Danger Zone") -->
+            <div id="card-display-area">
+                 <!-- Deck source visualizations (JS will manage visibility) -->
+                <div class="deck-source-visual" id="deck-source-1" style="display:none;"></div>
+                <div class="deck-source-visual" id="deck-source-2" style="display:none;"></div>
+                <div class="deck-source-visual" id="deck-source-3" style="display:none;"></div>
+
+                <!-- Slot 1 -->
+                <div class="card-slot" id="card-slot-1">
+                    <p class="card-label">CARD 1</p>
+                    <div class="card-face"> <!-- Artwork will be background-image -->
+                        <div class="card-category-icon"></div>
+                        <div class="scenario-text">Scenario 1 will appear here...</div>
+                        <div class="death-toll-placeholder"></div> <!-- Background image for ?, ??, ???, bones, vault etc. -->
+                        <div class="casualty-text" style="display: none;">Casualties: ???</div>
+                        <div class="player-bet-indicator" style="display:none;"></div>
+                        <div class="most-deaths-banner-container"></div> <!-- For the "MOST DEATHS!" banner -->
+                        <div class="card-particle-container"></div> <!-- For particle effects on card -->
+                    </div>
+                    <div class="dropped-token-indicator" id="dropped-tokens-card-1">
+                        Tokens on card: <span class="token-count-on-card" id="token-count-card-1">0</span>
+                        <div class="dropped-tokens-visual-area"></div>
+                    </div>
+                </div>
+                <!-- Slot 2 -->
+                <div class="card-slot" id="card-slot-2">
+                    <p class="card-label">CARD 2</p>
+                    <div class="card-face">
+                        <div class="card-category-icon"></div>
+                        <div class="scenario-text">Scenario 2 will appear here...</div>
+                        <div class="death-toll-placeholder"></div>
+                        <div class="casualty-text" style="display: none;">Casualties: ???</div>
+                        <div class="player-bet-indicator" style="display:none;"></div>
+                        <div class="most-deaths-banner-container"></div>
+                        <div class="card-particle-container"></div>
+                    </div>
+                    <div class="dropped-token-indicator" id="dropped-tokens-card-2">
+                        Tokens on card: <span class="token-count-on-card" id="token-count-card-2">0</span>
+                        <div class="dropped-tokens-visual-area"></div>
+                    </div>
+                </div>
+                <!-- Slot 3 -->
+                <div class="card-slot" id="card-slot-3">
+                    <p class="card-label">CARD 3</p>
+                    <div class="card-face">
+                        <div class="card-category-icon"></div>
+                        <div class="scenario-text">Scenario 3 will appear here...</div>
+                        <div class="death-toll-placeholder"></div>
+                        <div class="casualty-text" style="display: none;">Casualties: ???</div>
+                        <div class="player-bet-indicator" style="display:none;"></div>
+                        <div class="most-deaths-banner-container"></div>
+                        <div class="card-particle-container"></div>
+                    </div>
+                    <div class="dropped-token-indicator" id="dropped-tokens-card-3">
+                        Tokens on card: <span class="token-count-on-card" id="token-count-card-3">0</span>
+                        <div class="dropped-tokens-visual-area"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Player Controls (Confirm Bet Button) -->
+            <div id="player-controls">
+                <button id="place-bet-btn" disabled>Place Your Bets</button>
+            </div>
+
+            <!-- AI Bet Display -->
+            <div id="ai-bet-display" style="margin-top: 15px; display:none;">
+                <p>AI is thinking...</p>
+            </div>
+
+            <!-- Results Area -->
+            <div id="results-area" style="margin-top: 20px; display:none;">
+                <h2>Results:</h2>
+                <p id="round-outcome-message">Round outcome will be shown here.</p>
+            </div>
+
+            <!-- Next Round Button -->
+            <button id="next-round-btn" class="menu-button" style="margin-top: 20px; display: none;">Start Next Round</button>
+
+            <!-- Hidden old elements for compatibility -->
+            <div id="card-area-1" style="display:none;"><div class="scenario-text"></div><div class="casualty-count"></div></div>
+            <div id="card-area-2" style="display:none;"><div class="scenario-text"></div><div class="casualty-count"></div></div>
+            <button id="bet-on-card-1" style="display:none;">Bet on Card 1</button>
+            <button id="bet-on-card-2" style="display:none;">Bet on Card 2</button>
+            <button id="deal-cards-btn" style="display:none;">Deal New Cards (Old)</button>
+            <span id="player-score" style="display:none;">0</span>
+            <div id="message-area" style="display:none;">Old messages</div>
+        </div>
+    </div>
+
+    <!-- Phase 9: Game Over Screen -->
+    <div id="game-over-screen" style="display: none;">
+        <div class="game-over-content">
+            <div class="winner-declaration-banner"> <!-- For WINNER! text overlay -->
+                <h2 id="game-over-message">WINNER!</h2>
+            </div>
+            <div id="final-scores-summary"></div>
+            <div class="game-over-buttons">
+                <button id="play-again-btn" class="menu-button">PLAY AGAIN?</button>
+                <button id="return-to-main-menu-btn" class="menu-button">RETURN TO MAIN MENU</button>
+            </div>
+        </div>
+        <div class="confetti-container"></div> <!-- For CSS/JS confetti -->
+        <div class="fireworks-container"></div> <!-- For CSS/JS fireworks -->
+    </div>
+
+</div>
+<div id="game-tooltip" style="position:fixed; display:none; background:rgba(0,0,0,0.85); color:white; padding:5px 10px; border-radius:5px; font-size:12px; z-index:9999; pointer-events:none; white-space:nowrap;"></div>
+<!-- <script src="howler.min.js"></script> Potentially for sound -->
+<script src="script.js"></script>
 </body>
 </html>
