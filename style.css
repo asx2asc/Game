@@ -1417,3 +1417,477 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
 #game-tooltip {
     /* Styles are in HTML for now for simplicity, can move here */
 }
+
+/* --- Death by Coconuts Board Specific Styles --- */
+:root {
+    --royal-purple: #7D3CB0;
+    --island-emerald: #009C8C;
+    --teal-ocean: #00C5B5;
+    --sunshine-yellow: #FFD600;
+    --lava-orange: #FF6B24;
+    --coconut-husk-brown: #7A4B2E;
+    --white: #FFFFFF;
+    --black: #000000;
+    /* Fonts */
+    --font-pacifico: 'Pacifico', cursive;
+    --font-baloo: 'Baloo Bhai 2', cursive; /* Ensure Baloo Bhai 2 is loaded if used */
+    --font-futura: 'Futura Condensed', sans-serif; /* Futura is not web-safe, ensure fallback */
+}
+
+#death-by-coconuts-board {
+    position: relative;
+    width: 800px; /* 500mm @ 1.6px/mm */
+    height: 640px; /* 400mm @ 1.6px/mm */
+    background-color: var(--teal-ocean); /* ID 2 */
+    border: 16px solid var(--royal-purple); /* ID 1 - 10mm band */
+    box-shadow: inset 0 0 0 1.6px var(--white); /* ID 1 - Inner 1mm white border */
+    margin: 20px auto;
+    overflow: hidden;
+    font-family: var(--font-futura, 'Arial Narrow', sans-serif); /* General fallback */
+}
+
+#island-landmass { /* ID 3 */
+    position: absolute;
+    width: 464px; /* 290mm */
+    height: 480px; /* 300mm */
+    top: 80px; /* 50mm */
+    left: 168px; /* 105mm */
+    background-color: var(--island-emerald);
+    border: 1.6px solid var(--black); /* 1pt */
+    border-radius: 10px; /* Simplified irregular shape */
+    box-shadow: 0 0 0 8px var(--teal-ocean); /* 5mm Teal shoreline glow */
+}
+
+.deck-area-container { /* IDs 4,5,6 Container */
+    position: absolute;
+    top: 40px; /* Y: 25mm */
+    left: 48px; /* X: 30mm */
+    display: flex;
+    gap: 9.6px; /* 6mm */
+}
+
+.deck-area {
+    width: 96px; /* 60mm */
+    height: 64px; /* 40mm */
+    background-color: var(--island-emerald);
+    border: 3.2px solid var(--royal-purple); /* 2pt */
+    box-shadow: inset 0 0 0 1.6px var(--white); /* 1mm White inner border */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Titles at the top */
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+.deck-title {
+    background-color: var(--royal-purple);
+    color: var(--white);
+    font-family: var(--font-baloo, 'Comic Sans MS', cursive); /* Added fallback for Baloo */
+    font-size: 14px;
+    padding: 3px 8px;
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+    margin-bottom: 5px; /* Space between title and card area */
+}
+
+#betting-caption { /* ID 7 */
+    position: absolute;
+    top: 115.2px; /* 72mm */
+    left: 48px; /* 30mm */
+    width: 307.2px; /* 192mm */
+    height: 28.8px; /* 18mm */
+    background-color: var(--royal-purple);
+    color: var(--white);
+    font-family: var(--font-baloo, 'Comic Sans MS', cursive);
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+#betting-counters-area { /* ID 8 Container */
+    position: absolute;
+    top: 152px; /* Y: 95mm */
+    left: 57.6px; /* X: 36mm */
+    display: flex;
+    gap: 80px; /* 50mm approx (192 - 3*12)/2 = 78 -> 80px is fine for 50mm spacing between centers */
+}
+
+.betting-counter {
+    width: 19.2px; /* Ø12mm */
+    height: 19.2px;
+    border-radius: 50%;
+    border: 1.6px solid var(--black);
+}
+#betting-counter-1 { background-color: var(--royal-purple); }
+#betting-counter-2 { background-color: var(--sunshine-yellow); }
+#betting-counter-3 { background-color: var(--teal-ocean); }
+
+
+#coconut-beach-start { /* ID 9 */
+    position: absolute;
+    top: 512px; /* 320mm */
+    left: 32px; /* 20mm */
+    width: 144px; /* 90mm */
+    height: 96px; /* 60mm */
+    background-color: var(--royal-purple);
+    border: 3.2px solid var(--white); /* 2pt */
+    color: var(--white);
+    font-family: var(--font-pacifico, cursive);
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around; /* Space title and recesses */
+    text-align: center;
+    border-radius: 8px 8px 0 0; /* Simplified wavy top */
+    padding: 5px;
+    box-sizing: border-box;
+}
+.start-finish-title { /* Shared class for titles on start/finish areas */
+    display: block;
+    margin-bottom: 8px; /* Space between title and other content */
+}
+
+
+#token-recess-area { /* ID 10 Container */
+    display: flex;
+    gap: 3.2px; /* Approx 2mm */
+    justify-content: center; /* Center tokens in the area */
+    width:100%;
+}
+
+.token-recess {
+    width: 35.2px; /* Ø22mm */
+    height: 35.2px;
+    background-color: var(--white);
+    border: 1.6px solid var(--black);
+    border-radius: 50%;
+    box-shadow: inset 1px 1px 3px rgba(0,0,0,0.3); /* Inner shadow for recess */
+}
+
+#eternal-paradise-finish { /* ID 11 */
+    position: absolute;
+    top: 64px; /* 40mm */
+    left: 608px; /* 380mm */
+    width: 160px; /* Ø100mm */
+    height: 160px;
+    background-color: var(--sunshine-yellow);
+    border: 3.2px solid var(--white); /* 2pt */
+    border-radius: 50%;
+    color: var(--royal-purple);
+    font-family: var(--font-pacifico, cursive);
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px; /* Ensure text doesn't touch edges */
+    box-sizing: border-box;
+}
+
+#discard-piles-container { /* IDs 12,13 Container */
+    position: absolute;
+    top: 504px; /* Y: 315mm */
+    left: 656px; /* X: 410mm */
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Approx 5mm */
+}
+
+.discard-pile {
+    width: 112px; /* 70mm */
+    height: 72px; /* 45mm */
+    background-color: var(--royal-purple);
+    border: 3.2px solid var(--white); /* 2pt */
+    color: var(--white);
+    font-family: var(--font-baloo, 'Comic Sans MS', cursive);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    padding: 5px;
+    box-sizing: border-box;
+}
+.discard-pile-icon {
+    width: 30px;
+    height: 30px;
+    margin-bottom: 5px;
+    border-radius: 3px; /* Slight rounding for icon block */
+}
+#death-card-icon { background-color: var(--black); /* Placeholder */ }
+#treasure-card-icon { background-color: var(--sunshine-yellow); /* Placeholder */ }
+.discard-pile-label {
+    font-size: 12px;
+    text-align: center;
+}
+
+#compass-rose { /* ID 14 */
+    position: absolute;
+    top: 568px; /* 355mm */
+    left: 368px; /* 230mm */
+    width: 64px; /* Ø40mm */
+    height: 64px;
+    background-color: var(--white); /* Base for complex CSS/SVG */
+    border: 1.6px solid var(--black);
+    border-radius: 50%;
+    /* More styling needed for spokes/skull */
+}
+
+/* Player Markers - New Styling for Board Game Context */
+/* The old .player-marker styles (around line 350-380 in the original file) are now overridden by this new rule.
+   Properties like width, height, position, top, left, animation, specific background-colors from the old rule
+   will not apply if they conflict, due to CSS cascade or specificity if this rule is more specific or later in the sheet.
+   The prompt requested removal of old track-related styles, and this new rule serves that purpose for .player-marker.
+*/
+.player-marker {
+    position: absolute;
+    width: 35.2px; /* Match token recesses (Ø22mm) */
+    height: 35.2px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    z-index: 100; /* On top of other elements */
+    transition: left 0.5s ease-in-out, top 0.5s ease-in-out;
+    font-size: 16px; /* Readable character */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+    top: 530px;
+    left: 70px;
+    background-color: transparent;
+    line-height: normal;
+}
+
+/* Old player marker animations and pseudo-elements like ::after (glow) are implicitly removed
+   by not being re-declared here, or should be explicitly removed if they were separate rules.
+   The new .player-marker rule above does not include 'animation' or '::after' by default.
+*/
+
+#human-marker {
+    /* background-color: var(--sunshine-yellow); */ /* Example: can be set by JS or here if static */
+    /* color: var(--black); */
+}
+#ai-marker {
+    /* background-color: var(--lava-orange); */ /* Example: can be set by JS or here if static */
+    /* color: var(--white); */
+}
+
+
+#stones-of-fate-path { /* ID 18 */
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none; /* Container doesn't block clicks */
+    /* Individual stones will be absolutely positioned within this by JS */
+}
+
+/* --- Decorative Elements (Ocean/Board) --- */
+#octopus-tentacle { /* Placeholder style */
+    position: absolute;
+    bottom: -20px; /* Example positioning */
+    left: 20px;  /* Example positioning */
+    width: 150px; /* Example size */
+    height: 100px; /* Example size */
+    /* background-image: url('assets/images/octopus_tentacle.svg'); CREATE THIS */
+    background-repeat: no-repeat;
+    background-size: contain;
+    opacity: 0.8;
+    z-index: 5; /* Below markers but above background */
+}
+
+#halftone-grid-overlay { /* Placeholder style */
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    /* background-image: url('assets/patterns/halftone_grid.png'); CREATE THIS */
+    background-repeat: repeat;
+    opacity: 0.1;
+    pointer-events: none;
+    z-index: 1; /* Just above main board background */
+}
+
+/* Visual Enhancements and Decorative Elements */
+
+/* Stones of Fate (General Stone Style - ID 18) */
+.stone-of-fate {
+    position: absolute; /* Will be positioned by JS */
+    width: 64px; /* Approx 40mm */
+    height: 48px; /* Approx 30mm */
+    background-color: var(--white);
+    border: 3.2px solid var(--island-emerald); /* 2pt Emerald */
+    border-top-width: 1.6px; /* Split border for 1pt black */
+    border-bottom-width: 1.6px;
+    border-left-color: var(--black); /* 1pt Black part */
+    border-right-color: var(--black);
+    border-radius: 8px 12px / 12px 8px; /* Irregular shape */
+    box-shadow: 0 2px 3px rgba(0,0,0,0.2); /* Subtle drop shadow */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-futura);
+    font-size: 18px;
+    color: var(--black);
+    z-index: 10; /* Above island, below players */
+}
+
+/* Treasure Chest Stone (ID 15) */
+.treasure-chest-stone .stone-overlay {
+    position: absolute;
+    width: 48px; /* 30mm */
+    height: 48px;
+    background-color: var(--royal-purple);
+    border: 1.6px solid var(--black);
+    /* Add bursting-chest graphic as background image or pseudo-element */
+    background-image: url('assets/icons/treasure_chest_icon.svg'); /* CREATE THIS ICON */
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: center;
+    box-shadow: inset 0 0 5px rgba(255,255,255,0.3); /* Inner glow */
+}
+
+/* Lava Flow Stone (ID 16) */
+.lava-flow-stone {
+    /* Base stone style is already applied */
+    /* Orange overlay effect */
+    background-image: linear-gradient(rgba(255,107,36,0.7), rgba(255,107,36,0.5)), url('assets/textures/lava_cracks.svg'); /* CREATE THIS SVG TEXTURE */
+    background-blend-mode: multiply;
+    background-size: cover;
+    border-color: var(--lava-orange); /* Change border to match */
+    box-shadow: 0 0 10px var(--lava-orange), inset 0 0 8px var(--lava-orange); /* Outer and Inner glow */
+}
+.lava-flow-stone .stone-number { /* Make number visible on lava */
+    color: var(--white);
+    text-shadow: 0 0 3px var(--black);
+}
+
+
+/* Rope Bridge Arrows (ID 17) */
+.rope-bridge-arrow {
+    position: absolute;
+    width: 64px; /* 40mm length */
+    height: 19.2px; /* 12mm height/thickness */
+    background-image: url('assets/icons/rope_arrow.svg'); /* CREATE THIS (dashed rope texture arrow) */
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 15; /* Above stones */
+    /* JS will handle exact positioning and rotation between stones */
+}
+
+/* Octopus Tentacle (ID 19) */
+#octopus-tentacle {
+    position: absolute;
+    width: 112px; /* 70mm */
+    height: 64px; /* 40mm */
+    top: 320px; /* 200mm */
+    left: 560px; /* 350mm */
+    background-image: url('assets/images/octopus_tentacle.svg'); /* CREATE THIS */
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.2; /* 20% Teal - achieved by SVG fill or opacity here */
+    /* border: 1.6px solid var(--black); -- if SVG doesn't include outline */
+    z-index: 5; /* Below stones but above ocean */
+}
+
+/* Palm Silhouettes (ID 20) - General class, JS might add multiple */
+.palm-silhouette {
+    position: absolute;
+    width: 56px; /* 30-40mm */
+    height: 80px; /* ~50% Emerald fill */
+    background-image: url('assets/images/palm_silhouette.svg'); /* CREATE THIS */
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.5; /* 50% Emerald - achieved by SVG fill or opacity here */
+    z-index: 6; /* On island, can overlap stones slightly */
+    /* Example positions - JS would place these based on design */
+}
+/* Example placement for one palm */
+#palm-silhouette-1 {
+    top: 128px; /* 80mm */
+    left: 224px; /* 140mm */
+}
+
+/* Cave Mouths (ID 21) - General class */
+.cave-mouth {
+    position: absolute;
+    width: 40px; /* 25mm */
+    height: 28.8px; /* 18mm */
+    background-image: url('assets/images/cave_mouth.svg'); /* CREATE THIS - oval, dark with white highlight top lip */
+    background-size: contain;
+    background-repeat: no-repeat;
+    /* fill: var(--island-emerald) opacity 0.7 in SVG or: */
+    /* background-color: var(--island-emerald); opacity: 0.7; */
+    z-index: 7; /* On island */
+}
+/* Example placement for one cave */
+#cave-mouth-1 {
+    top: 240px; /* 150mm */
+    left: 288px; /* 180mm */
+}
+
+
+/* Halftone Grid (ID 22) */
+#halftone-grid-overlay {
+    position: absolute;
+    top: 16px; /* Inside the purple frame, on the ocean (10mm from edge of board) */
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    background-image: radial-gradient(var(--white) 5%, transparent 5.5%); /* 5% white dot */
+    background-size: 16px 16px; /* 10mm grid approx */
+    opacity: 0.05; /* 5% White overall effect */
+    z-index: 1; /* Just above ocean background */
+    pointer-events: none;
+}
+
+/* Linework & General Styles */
+/* Adding general drop shadow for elements that need it - can be a class */
+.has-drop-shadow {
+    filter: drop-shadow(1.6px 1.6px 0px rgba(0,0,0,0.2)); /* 1mm offset, 20% opacity */
+}
+
+/* Apply specific fonts more broadly if needed, e.g. body or #game-container */
+#death-by-coconuts-board { /* Ensure board context uses thematic fonts where not overridden */
+    font-family: var(--font-baloo); /* Default label font */
+}
+#death-by-coconuts-board .title-script { /* Class for Pacifico titles */
+    font-family: var(--font-pacifico);
+}
+#death-by-coconuts-board .body-condensed { /* Class for Futura text */
+    font-family: var(--font-futura);
+}
+
+/* Player marker enhancement based on new board */
+.player-marker {
+    /* Existing styles are mostly fine: position absolute, z-index, width/height */
+    /* Ensure players are visually distinct and on top of stones */
+    z-index: 20;
+    /* Add drop shadow for depth, as per general style notes */
+    filter: drop-shadow(1.6px 1.6px 1px rgba(0,0,0,0.4));
+}
+
+/* Adjusting font loading in HTML if not already present for Pacifico and Baloo Bhai 2 */
+/* This task is CSS only, but as a note for later:
+   Ensure <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Baloo+Bhai+2:wght@400;700&family=Futura+Condensed&display=swap" rel="stylesheet">
+   is in index.html or similar. Futura Condensed is tricky, might need local font or good fallback.
+   The existing link has Roboto, Bangers, Luckiest Guy. We need to add/update for Pacifico and Baloo Bhai 2.
+*/
+
+/* Make sure the board elements that are supposed to have a black keyline get it */
+/* Example: Island Landmass already has border: 1.6px solid var(--black); */
+/* Decks also have their borders defined. */
+/* Compass Rose has border: 1.6px solid var(--black); */
+/* Treasure Chest overlay has border: 1.6px solid var(--black); */
+
+/* Ensure the 10mm band for the outer frame is correctly represented */
+/* #death-by-coconuts-board already has:
+    border: 16px solid var(--royal-purple); (10mm band -> 16px approx)
+    box-shadow: inset 0 0 0 1.6px var(--white); (Inner 1mm White border)
+   This seems correct.
+*/

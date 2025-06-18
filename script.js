@@ -1,6 +1,51 @@
 // --- Global Game State Variable ---
 let gameState = 'MENU';
 
+// ADD THIS NEAR THE TOP OF SCRIPT.JS
+const stonesOfFateCoordinates = [
+    { id: 0, x: 96, y: 528 }, // Corresponds to "MAP_START_POSITION" or Stone 1
+    { id: 1, x: 96, y: 528 },   // Stone 1: (60,330)mm -> 96, 528
+    { id: 2, x: 115, y: 510 },  // Approx intermediate
+    { id: 3, x: 134, y: 492 },  // Approx intermediate
+    { id: 4, x: 155, y: 470 },  // Approx intermediate
+    { id: 5, x: 170, y: 455 },  // Approx intermediate
+    { id: 6, x: 178, y: 448 },  // Approx intermediate (leading to stone 7)
+    { id: 7, x: 176, y: 448 },   // Stone 7: (110,280)mm -> 176, 448
+    { id: 8, x: 190, y: 430 },   // Approx intermediate
+    { id: 9, x: 205, y: 415 },   // Approx intermediate
+    { id: 10, x: 224, y: 400 },  // Stone 10: (140,250)mm -> 224, 400
+    // ... (add more stones, up to 45, following a spiral path)
+    // For brevity in this step, we'll only define a few.
+    // The actual game will need all 45.
+    // Let's add a few more to simulate movement towards the end
+    { id: 11, x: 240, y: 380 },
+    { id: 12, x: 260, y: 360 }, // Stone 12 (160, 230)mm -> 256, 368
+    { id: 13, x: 280, y: 340 }, // Stone 13 (treasure)
+    { id: 14, x: 300, y: 320 },
+    { id: 15, x: 320, y: 300 },
+    { id: 16, x: 340, y: 280 },
+    { id: 17, x: 360, y: 260 },
+    { id: 18, x: 380, y: 240 }, // Stone 18 (Lava & Rope Exit) (210,190)mm -> 336, 304
+    { id: 19, x: 400, y: 220 }, // Stone 19 (treasure)
+    { id: 20, x: 420, y: 200 },
+    // ... many intermediate stones ...
+    { id: 40, x: 624, y: 160 }, // Stone 40 (Lava) (390,100)mm -> 624, 160
+    { id: 41, x: 640, y: 155 },
+    { id: 42, x: 656, y: 150 },
+    { id: 43, x: 672, y: 147 },
+    { id: 44, x: 680, y: 144 }, // Penultimate
+    { id: 45, x: 688, y: 144 }   // Stone 45 (Finish adj.): (430,90)mm -> 688, 144
+];
+// Add a special entry for the very start if it's off-stone, or map MAP_START_POSITION (0) to Stone 1
+// For simplicity, let's assume map position 0 is stone 1 for now.
+// Ensure MAP_END_POSITION (50) correctly maps to stone 45 or a finish area.
+// The `id` in stonesOfFateCoordinates is 1-indexed for stones, but game logic uses 0-50.
+// We need a mapping or adjust game logic. For now, targetMapPos will be 0-50.
+// Let's map game positions 0-45 to stones 1-45+ (array index 0 to 44 for stone 1 to 45).
+// So stone `s` is at `stonesOfFateCoordinates[s-1]`.
+// And `MAP_END_POSITION` is 50, but path is 45 stones. The last 5 "positions" could be "on finish line".
+
+
 // --- Sound Engine (Howler.js Placeholder) ---
 const sounds = {
     // UI & Menu
@@ -275,6 +320,21 @@ function initializeGameVariables() {
     humanMarker.innerHTML = playerPawnConfig.shapeImg ? `<img src="${playerPawnConfig.shapeImg}" alt="Player">` : playerPawnConfig.shapeChar;
     humanMarker.style.backgroundColor = playerPawnConfig.shapeImg ? 'transparent' : playerPawnConfig.color;
     humanMarker.style.setProperty('--pawn-glow-color', `${playerPawnConfig.color}80`);
+
+    // Add these lines in initializeGameVariables:
+    const initialStone = stonesOfFateCoordinates[0]; // Stone 1
+    if (initialStone) {
+        if (humanMarker) {
+            humanMarker.style.left = initialStone.x + 'px';
+            humanMarker.style.top = initialStone.y + 'px';
+        }
+        if (aiMarker) {
+            aiMarker.style.left = initialStone.x + 'px';
+            aiMarker.style.top = initialStone.y + 'px';
+        }
+    }
+    // Ensure updateMapDisplay is called to set initial text scores correctly
+    updateMapDisplay();
 }
 
 function actualStartGame() {
@@ -804,25 +864,56 @@ async function movePawnVisual(pawnElement, targetMapPos, isForward, prevMapPos, 
     await delay(300);
     pawnElement.classList.remove('activating');
 
-    if (stoppedAtCp) { // Already handled stopping at checkpoint logic if applicable
+    if (stoppedAtCp) {
         createShieldEffect(pawnElement);
         playSound('shieldBlockSound');
     }
 
-    const targetPercentage = (targetMapPos / MAP_END_POSITION) * 100;
-    pawnElement.style.left = `${Math.min(100, Math.max(0, targetPercentage))}%`;
-    playSound(isForward ? 'pawnMoveForward' : (targetMapPos === prevMapPos ? 'uiHover' : 'pawnMoveBackward')); // uiHover if no move
-    // createPawnTrail(pawnElement, 5, isForward); // Example trail
-    await delay(600);
-    updateMapDisplay();
+    // Map targetMapPos (0-50) to a stone coordinate
+    let stoneIndex;
+    if (targetMapPos === MAP_START_POSITION) { // Usually 0
+        stoneIndex = 0; // First stone in our 0-indexed array (Stone 1)
+    } else if (targetMapPos >= stonesOfFateCoordinates.length) { // If targetMapPos exceeds defined stones (e.g. 45 stones, target is 46-50)
+        stoneIndex = stonesOfFateCoordinates.length - 1; // Go to the last defined stone (Stone 45)
+    } else {
+        stoneIndex = targetMapPos > 0 ? targetMapPos -1 : 0; // Game position 1 maps to index 0, etc.
+                                                          // Clamp to ensure valid index.
+        stoneIndex = Math.max(0, Math.min(stoneIndex, stonesOfFateCoordinates.length - 1));
+    }
+
+    const targetStone = stonesOfFateCoordinates[stoneIndex];
+
+    if (targetStone) {
+        pawnElement.style.left = targetStone.x + 'px';
+        pawnElement.style.top = targetStone.y + 'px';
+        playSound(isForward ? 'pawnMoveForward' : (targetMapPos === prevMapPos ? 'uiHover' : 'pawnMoveBackward'));
+    } else {
+        console.error("Target stone not found for position:", targetMapPos, "Mapped index:", stoneIndex);
+        // Fallback: position it at the start or end if something is wrong
+        if (targetMapPos >= MAP_END_POSITION / 2) { // Closer to end
+             const lastStone = stonesOfFateCoordinates[stonesOfFateCoordinates.length -1];
+             pawnElement.style.left = lastStone.x + 'px';
+             pawnElement.style.top = lastStone.y + 'px';
+        } else { // Closer to start
+             const firstStone = stonesOfFateCoordinates[0];
+             pawnElement.style.left = firstStone.x + 'px';
+             pawnElement.style.top = firstStone.y + 'px';
+        }
+    }
+    // createPawnTrail(pawnElement, 5, isForward); // Optional
+    await delay(600); // Animation time for movement
+    updateMapDisplay(); // updateMapDisplay primarily updates text now, pawn visuals are set here.
 }
 
-// updateMapDisplay (Ensure it's just updating text, not pawn position directly as movePawnVisual handles that)
 function updateMapDisplay() {
-    if (!humanMarker || !aiMarker || !humanMapPosText || !aiMapPosText) return;
-    // Pawn positions are now set by movePawnVisual via style.left
+    if (!humanMapPosText || !aiMapPosText) return;
+    // Visual pawn positions are set by movePawnVisual. This function now only updates text.
     humanMapPosText.textContent = `${humanMapPosition}/${MAP_END_POSITION}`;
     aiMapPosText.textContent = `${aiMapPosition}/${MAP_END_POSITION}`;
+
+    // Update score board text too
+    if(humanScorePosSpan) humanScorePosSpan.textContent = humanMapPosition;
+    if(aiScorePosSpan) aiScorePosSpan.textContent = aiMapPosition;
 }
 
 // --- Phase 8: End of Round / Transition ---
