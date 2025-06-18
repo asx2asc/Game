@@ -1614,13 +1614,24 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
     box-sizing: border-box;
 }
 .discard-pile-icon {
-    width: 30px;
-    height: 30px;
-    margin-bottom: 5px;
-    border-radius: 3px; /* Slight rounding for icon block */
+    width: 30px; height: 30px; margin-bottom: 5px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; color: var(--white); font-weight: bold;
+    background-color: transparent; /* Remove placeholder background if text is used */
 }
-#death-card-icon { background-color: var(--black); /* Placeholder */ }
-#treasure-card-icon { background-color: var(--sunshine-yellow); /* Placeholder */ }
+#death-card-icon::before {
+    content: "💀"; /* Skull emoji or text */
+    color: var(--white);
+}
+#treasure-card-icon::before {
+    content: "C"; /* Chest or coin emoji/text */
+    color: var(--sunshine-yellow);
+}
+/* Better: Make icon backgrounds transparent if using text, or ensure text contrasts */
+#death-card-icon { background-color: rgba(0,0,0,0.5); }
+#treasure-card-icon { background-color: rgba(0,0,0,0.3); } /* Or use a dark purple */
+#treasure-card-icon::before { color: var(--sunshine-yellow); }
+#death-card-icon::before { color: var(--white); }
 .discard-pile-label {
     font-size: 12px;
     text-align: center;
@@ -1744,21 +1755,27 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
     height: 48px;
     background-color: var(--royal-purple);
     border: 1.6px solid var(--black);
-    /* Add bursting-chest graphic as background image or pseudo-element */
-    background-image: url('assets/icons/treasure_chest_icon.svg'); /* CREATE THIS ICON */
+    /* background-image: url('assets/icons/treasure_chest_icon.svg'); /* CREATE THIS ICON LATER */
     background-size: 70%;
     background-repeat: no-repeat;
     background-position: center;
     box-shadow: inset 0 0 5px rgba(255,255,255,0.3); /* Inner glow */
+    display: flex; align-items: center; justify-content: center;
+    color: var(--sunshine-yellow);
+    font-size: 24px; /* For placeholder text/icon */
+}
+/* Add a placeholder character if actual SVG is not available */
+.treasure-chest-stone .stone-overlay::before {
+    content: "T"; /* Placeholder for Treasure */
+    font-weight: bold;
 }
 
 /* Lava Flow Stone (ID 16) */
 .lava-flow-stone {
     /* Base stone style is already applied */
-    /* Orange overlay effect */
-    background-image: linear-gradient(rgba(255,107,36,0.7), rgba(255,107,36,0.5)), url('assets/textures/lava_cracks.svg'); /* CREATE THIS SVG TEXTURE */
-    background-blend-mode: multiply;
-    background-size: cover;
+    background-image: linear-gradient(to bottom right, var(--lava-orange), #FF8C00); /* Simpler gradient for lava */
+    /* background-blend-mode: multiply; */ /* Not needed with simple gradient */
+    /* background-size: cover; */
     border-color: var(--lava-orange); /* Change border to match */
     box-shadow: 0 0 10px var(--lava-orange), inset 0 0 8px var(--lava-orange); /* Outer and Inner glow */
 }
@@ -1773,9 +1790,11 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
     position: absolute;
     width: 64px; /* 40mm length */
     height: 19.2px; /* 12mm height/thickness */
-    background-image: url('assets/icons/rope_arrow.svg'); /* CREATE THIS (dashed rope texture arrow) */
-    background-size: contain;
-    background-repeat: no-repeat;
+    background-color: var(--sunshine-yellow); /* Placeholder color */
+    border: 1.6px solid var(--black);
+    /* background-image: url('assets/icons/rope_arrow.svg'); /* CREATE THIS LATER */
+    /* background-size: contain; */
+    /* background-repeat: no-repeat; */
     z-index: 15; /* Above stones */
     /* JS will handle exact positioning and rotation between stones */
 }
@@ -1787,11 +1806,12 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
     height: 64px; /* 40mm */
     top: 320px; /* 200mm */
     left: 560px; /* 350mm */
-    background-image: url('assets/images/octopus_tentacle.svg'); /* CREATE THIS */
-    background-size: contain;
-    background-repeat: no-repeat;
-    opacity: 0.2; /* 20% Teal - achieved by SVG fill or opacity here */
-    /* border: 1.6px solid var(--black); -- if SVG doesn't include outline */
+    background-color: var(--teal-ocean); /* Placeholder color */
+    /* background-image: url('assets/images/octopus_tentacle.svg'); /* CREATE THIS LATER */
+    /* background-size: contain; */
+    /* background-repeat: no-repeat; */
+    opacity: 0.2; /* 20% Teal */
+    border-radius: 50% 20% / 40% 60%; /* Attempt a blobby shape */
     z-index: 5; /* Below stones but above ocean */
 }
 
@@ -1800,12 +1820,12 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
     position: absolute;
     width: 56px; /* 30-40mm */
     height: 80px; /* ~50% Emerald fill */
-    background-image: url('assets/images/palm_silhouette.svg'); /* CREATE THIS */
-    background-size: contain;
-    background-repeat: no-repeat;
-    opacity: 0.5; /* 50% Emerald - achieved by SVG fill or opacity here */
+    background-color: var(--island-emerald); /* Placeholder color */
+    /* background-image: url('assets/images/palm_silhouette.svg'); /* CREATE THIS LATER */
+    /* background-size: contain; */
+    /* background-repeat: no-repeat; */
+    opacity: 0.5; /* 50% Emerald */
     z-index: 6; /* On island, can overlap stones slightly */
-    /* Example positions - JS would place these based on design */
 }
 /* Example placement for one palm */
 #palm-silhouette-1 {
@@ -1818,11 +1838,13 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
     position: absolute;
     width: 40px; /* 25mm */
     height: 28.8px; /* 18mm */
-    background-image: url('assets/images/cave_mouth.svg'); /* CREATE THIS - oval, dark with white highlight top lip */
-    background-size: contain;
-    background-repeat: no-repeat;
-    /* fill: var(--island-emerald) opacity 0.7 in SVG or: */
-    /* background-color: var(--island-emerald); opacity: 0.7; */
+    background-color: #4a4a4a; /* Dark placeholder for cave */
+    border: 1.6px solid var(--black);
+    border-radius: 50%; /* Oval shape */
+    /* background-image: url('assets/images/cave_mouth.svg'); /* CREATE THIS LATER */
+    /* background-size: contain; */
+    /* background-repeat: no-repeat; */
+    opacity: 0.7;
     z-index: 7; /* On island */
 }
 /* Example placement for one cave */
