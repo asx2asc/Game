@@ -1634,8 +1634,6 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
 .discard-pile-icon {
     width: 30px; height: 30px; margin-bottom: 5px;
     display: flex; align-items: center; justify-content: center;
-    /* font-size: 20px; color: var(--white); font-weight: bold; // Removed for SVG */
-    background-color: transparent;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -1644,23 +1642,24 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
     content: ""; /* Clear text placeholder */
 }
 #death-card-icon {
-    background-image: url('https://publicdomainvectors.org/download.php?file=skull-n-bones-white.svg');
-    filter: brightness(0) invert(1); /* Attempt to make a black SVG white */
+    background-image: url('assets/icons/skull_white.svg'); /* Developer note: Original was skull-n-bones-white.svg. Ensure this SVG is white or predominantly white. */
+    /* Ensure white skull is visible on purple background, may need CSS filter if SVG isn't inherently white */
+    /* filter: brightness(0) invert(1); /* Example to make it white if it's black */
 }
 #treasure-card-icon {
-    background-image: url('https://publicdomainvectors.org/download.php?file=chest.svg');
-    filter: brightness(0) invert(1) contrast(0.5) sepia(1) hue-rotate(200deg) saturate(0) brightness(1.5); /* Attempt to make it a very light, almost white icon - this is experimental */
+    background-image: url('assets/icons/chest_white.svg'); /* Developer note: Original was chest.svg. Create/style a white or outline version for icon use, named chest_white.svg. */
+         /* filter: brightness(0) invert(1) sepia(1) saturate(0) hue-rotate(200deg) brightness(1.5); /* Crude attempt to make it look like a white/simple icon */
 }
 .discard-pile-label {
     font-size: 12px;
     text-align: center;
 }
 
-#compass-rose { /* ID 14 */
+#compass-rose {
     position: absolute;
-    top: 568px; /* 355mm */
-    left: 368px; /* 230mm */
-    width: 64px; /* Ø40mm */
+    top: 568px;
+    left: 368px;
+    width: 64px;
     height: 64px;
     background-color: var(--white); /* Spokes remain complex */
     border: 1.6px solid var(--black);
@@ -1669,11 +1668,11 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
     align-items: center;
     justify-content: center;
     /* Add background image for the skull */
-    background-image: url('https://publicdomainvectors.org/download.php?file=skull-n-bones-white.svg');
-    background-size: 60%; /* Increased size slightly for visibility */
+    background-image: url('assets/icons/skull_white.svg'); /* Developer note: Reusing skull_white.svg. This is a placeholder for a specific 'coconut-skull' if one is created. */
+    background-size: 60%; /* Scale skull to fit center */
     background-repeat: no-repeat;
     background-position: center;
-    filter: brightness(0) invert(1); /* Attempt to make skull white */
+    /* filter: brightness(0) invert(1); /* REMOVE/COMMENT OUT: Assumes skull_white.svg is already white */
 }
 
 /* Player Markers - New Styling for Board Game Context */
@@ -1783,7 +1782,7 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
     height: 48px;
     background-color: var(--royal-purple); /* Keep as fallback or if SVG has transparent parts */
     border: 1.6px solid var(--black);
-    background-image: url('https://publicdomainvectors.org/download.php?file=chest.svg');
+    background-image: url('assets/icons/chest.svg'); /* Developer note: Original was chest.svg from publicdomainvectors.org */
     background-size: 80%; /* Adjust as needed for bursting effect */
     background-repeat: no-repeat;
     background-position: center;
@@ -1798,7 +1797,7 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
 /* Lava Flow Stone (ID 16) */
 .lava-flow-stone {
     background-color: var(--lava-orange); /* Base color */
-    background-image: url('https://publicdomainvectors.org/download.php?file=cracks-jonny-doomsday(1).zip'); /* THIS URL IS A ZIP, NEEDS ACTUAL SVG PATH */
+    background-image: url('assets/textures/cracks_texture.svg'); /* Developer note: Original was cracks-jonny-doomsday(1).zip; select/extract a suitable crack pattern SVG and name it cracks_texture.svg */
     background-size: cover;
     background-position: center; /* Center the cracks */
     border-color: var(--lava-orange);
@@ -1826,44 +1825,48 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
 /* Rope Bridge Arrows (ID 17) */
 .rope-bridge-arrow {
     position: absolute;
-    width: 64px; /* 40mm length */
-    height: 19.2px; /* 12mm height/thickness */
-    background-color: var(--sunshine-yellow); /* Placeholder color */
-    border: 1.6px solid var(--black);
-    /* background-image: url('assets/icons/rope_arrow.svg'); /* CREATE THIS LATER */
-    /* background-size: contain; */
-    /* background-repeat: no-repeat; */
-    z-index: 15; /* Above stones */
-    /* JS will handle exact positioning and rotation between stones */
+    width: 64px;
+    height: 19.2px; /* Adjusted to maintain aspect ratio if arrow is not this shape */
+    background-color: transparent; /* Remove placeholder color */
+    border: none; /* Remove placeholder border */
+    background-image: url('assets/icons/curved_arrow_yellow.svg'); /* Developer note: Original was curved-arrows.svg; select/extract/style a suitable curved arrow and name it curved_arrow_yellow.svg (should be Sunshine Yellow) */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 15;
+    /* filter: sepia(1) saturate(5) hue-rotate(10deg); /* Attempt to make it yellowish if it's not, adjust as needed */
+    /* A real solution might involve SVG parameter for color or specific SVG file */
 }
 
 /* Octopus Tentacle (ID 19) */
 #octopus-tentacle {
     position: absolute;
-    width: 112px; /* 70mm */
-    height: 64px; /* 40mm */
-    top: 320px; /* 200mm */
-    left: 560px; /* 350mm */
-    background-color: var(--teal-ocean); /* Placeholder color */
-    /* background-image: url('assets/images/octopus_tentacle.svg'); /* CREATE THIS LATER */
-    /* background-size: contain; */
-    /* background-repeat: no-repeat; */
-    opacity: 0.2; /* 20% Teal */
-    border-radius: 50% 20% / 40% 60%; /* Attempt a blobby shape */
-    z-index: 5; /* Below stones but above ocean */
+    width: 112px;
+    height: 64px;
+    top: 320px;
+    left: 560px;
+    background-color: transparent; /* Remove placeholder */
+    background-image: url('assets/images/octopus_tentacle_single.svg'); /* Developer note: Original was 1415595807.svg (octopus_set.svg); extract/edit to get a single tentacle named octopus_tentacle_single.svg */
+    background-size: contain; /* Will show the whole set, might need cropping/specific SVG part */
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.2; /* As per spec: 20% Teal */
+    border-radius: 0; /* Remove placeholder shape */
+    z-index: 5;
 }
 
 /* Palm Silhouettes (ID 20) - General class, JS might add multiple */
 .palm-silhouette {
     position: absolute;
-    width: 56px; /* 30-40mm */
-    height: 80px; /* ~50% Emerald fill */
-    background-color: var(--island-emerald); /* Placeholder color */
-    /* background-image: url('assets/images/palm_silhouette.svg'); /* CREATE THIS LATER */
-    /* background-size: contain; */
-    /* background-repeat: no-repeat; */
-    opacity: 0.5; /* 50% Emerald */
-    z-index: 6; /* On island, can overlap stones slightly */
+    width: 56px;
+    height: 80px;
+    background-color: transparent; /* Remove placeholder */
+    background-image: url('assets/images/palm_silhouette_single.svg'); /* Developer note: Original was 081.svg (palm_silhouette_set.svg); select/extract a representative silhouette and name it palm_silhouette_single.svg */
+    background-size: contain; /* Shows the whole set, may need specific SVG targeting */
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.5;
+    z-index: 6;
 }
 /* Example placement for one palm */
 #palm-silhouette-1 {
@@ -1874,16 +1877,17 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
 /* Cave Mouths (ID 21) - General class */
 .cave-mouth {
     position: absolute;
-    width: 40px; /* 25mm */
-    height: 28.8px; /* 18mm */
-    background-color: #4a4a4a; /* Dark placeholder for cave */
-    border: 1.6px solid var(--black);
-    border-radius: 50%; /* Oval shape */
-    /* background-image: url('assets/images/cave_mouth.svg'); /* CREATE THIS LATER */
-    /* background-size: contain; */
-    /* background-repeat: no-repeat; */
-    opacity: 0.7;
-    z-index: 7; /* On island */
+    width: 40px;
+    height: 28.8px;
+    background-color: transparent; /* Remove placeholder */
+    border: none; /* Remove placeholder border */
+    border-radius: 0; /* Remove placeholder shape */
+    background-image: url('assets/images/cave_mouth_isolated.svg'); /* Developer note: Original was Cho-Long-Vang-06.svg (cave_entrance_scene.svg); isolate cave mouth part and name it cave_mouth_isolated.svg */
+    background-size: cover; /* Or contain, adjust to show cave mouth part */
+    background-repeat: no-repeat;
+    background-position: center; /* Adjust if needed to focus on mouth */
+    opacity: 0.7; /* As per spec: 70% Emerald (achieved via opacity if SVG is full emerald color) */
+    z-index: 7;
 }
 /* Example placement for one cave */
 #cave-mouth-1 {
