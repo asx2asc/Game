@@ -358,6 +358,7 @@ function actualStartGame() {
     initializeGameVariables(); // This now sets pawn visuals based on playerPawnConfig
     mainMenuScreen.style.display = 'none';
     gameScreen.style.display = 'block';
+    resetAndCreatePlayerTokens(); // Create tokens immediately when game screen is shown
     gameOverScreen.style.display = 'none';
     mapTotalSpacesSpans.forEach(span => span.textContent = MAP_END_POSITION);
     document.querySelectorAll('.map-space-finish').forEach(el => el.classList.add('glowing'));
