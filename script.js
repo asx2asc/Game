@@ -402,6 +402,7 @@ async function startNewRound() {
         if(cs.categoryIcon) cs.categoryIcon.innerHTML = '';
         if(cs.bannerContainer) cs.bannerContainer.innerHTML = '';
         if(cs.particleContainer) cs.particleContainer.innerHTML = '';
+        cs.slot.style.display = 'flex'; // Ensure card slot is visible
     });
     playerTokensOnCards = [0, 0, 0];
 
@@ -615,7 +616,11 @@ function handleCardDrop(e) {
 
         draggedTokenElement = null;
         if (humanTokensSpan) humanTokensSpan.textContent = tokenPool.querySelectorAll('.draggable-token').length;
-        if (confirmBetBtn) { confirmBetBtn.disabled = false; confirmBetBtn.textContent = 'Confirm Bets'; }
+        if (confirmBetBtn) { 
+            confirmBetBtn.disabled = false; 
+            confirmBetBtn.textContent = 'Confirm Bets'; 
+            confirmBetBtn.classList.remove('confirmed'); // Ensure button is not styled as confirmed when enabling
+        }
     }
 }
 
