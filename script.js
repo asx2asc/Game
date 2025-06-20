@@ -1,6 +1,66 @@
 // --- Global Game State Variable ---
 let gameState = 'MENU';
 
+// Fully defined Stones of Fate Coordinates (0-indexed array for stones 1-45)
+// array[0] is Stone 1, array[44] is Stone 45.
+const stonesOfFateCoordinates = [
+    // Stone 1 to 7 (Anchor 1: (96, 528), Anchor 7: (176, 448)) - 6 segments
+    { id: 1, x: 96, y: 528 },   // Stone 1
+    { id: 2, x: 109, y: 515 },  // Interpolated
+    { id: 3, x: 122, y: 501 },  // Interpolated
+    { id: 4, x: 135, y: 488 },  // Interpolated
+    { id: 5, x: 149, y: 475 },  // Interpolated
+    { id: 6, x: 162, y: 461 },  // Interpolated
+    { id: 7, x: 176, y: 448 },   // Stone 7
+    // Stone 7 to 10 (Anchor 7: (176, 448), Anchor 10: (224, 400)) - 3 segments
+    { id: 8, x: 192, y: 432 },  // Interpolated
+    { id: 9, x: 208, y: 416 },  // Interpolated
+    { id: 10, x: 224, y: 400 },  // Stone 10
+    // Stone 10 to 12 (Anchor 10: (224, 400), Anchor 12: (256, 368)) - 2 segments
+    { id: 11, x: 240, y: 384 }, // Interpolated
+    { id: 12, x: 256, y: 368 },  // Stone 12
+    // Stone 12 to 18 (Anchor 12: (256, 368), Anchor 18: (336, 304)) - 6 segments
+    { id: 13, x: 269, y: 357 },  // Interpolated
+    { id: 14, x: 282, y: 346 },  // Interpolated
+    { id: 15, x: 296, y: 335 },  // Interpolated
+    { id: 16, x: 309, y: 325 },  // Interpolated
+    { id: 17, x: 322, y: 314 },  // Interpolated
+    { id: 18, x: 336, y: 304 },  // Stone 18
+    // Stone 18 to 25 (Anchor 18: (336, 304), Anchor 25: (432, 256)) - 7 segments
+    { id: 19, x: 350, y: 297 },  // Interpolated
+    { id: 20, x: 363, y: 290 },  // Interpolated
+    { id: 21, x: 377, y: 283 },  // Interpolated
+    { id: 22, x: 390, y: 276 },  // Interpolated
+    { id: 23, x: 404, y: 269 },  // Interpolated
+    { id: 24, x: 418, y: 262 },  // Interpolated
+    { id: 25, x: 432, y: 256 },  // Stone 25
+    // Stone 25 to 28 (Anchor 25: (432, 256), Anchor 28: (464, 240)) - 3 segments
+    { id: 26, x: 443, y: 251 },  // Interpolated
+    { id: 27, x: 453, y: 245 },  // Interpolated
+    { id: 28, x: 464, y: 240 },  // Stone 28
+    // Stone 28 to 31 (Anchor 28: (464, 240), Anchor 31: (512, 224)) - 3 segments
+    { id: 29, x: 480, y: 235 },  // Interpolated
+    { id: 30, x: 496, y: 229 },  // Interpolated
+    { id: 31, x: 512, y: 224 },  // Stone 31
+    // Stone 31 to 37 (Anchor 31: (512, 224), Anchor 37: (592, 176)) - 6 segments
+    { id: 32, x: 525, y: 216 },  // Interpolated
+    { id: 33, x: 539, y: 208 },  // Interpolated
+    { id: 34, x: 552, y: 200 },  // Interpolated
+    { id: 35, x: 565, y: 192 },  // Interpolated
+    { id: 36, x: 579, y: 184 },  // Interpolated
+    { id: 37, x: 592, y: 176 },  // Stone 37
+    // Stone 37 to 40 (Anchor 37: (592, 176), Anchor 40: (624, 160)) - 3 segments
+    { id: 38, x: 603, y: 171 },  // Interpolated
+    { id: 39, x: 613, y: 165 },  // Interpolated
+    { id: 40, x: 624, y: 160 },  // Stone 40
+    // Stone 40 to 45 (Anchor 40: (624, 160), Anchor 45: (688, 144)) - 5 segments
+    { id: 41, x: 637, y: 157 },  // Interpolated
+    { id: 42, x: 650, y: 154 },  // Interpolated
+    { id: 43, x: 662, y: 150 },  // Interpolated
+    { id: 44, x: 675, y: 147 },  // Interpolated
+    { id: 45, x: 688, y: 144 }   // Stone 45
+];
+
 // --- Sound Engine (Howler.js Placeholder) ---
 const sounds = {
     // UI & Menu
@@ -275,6 +335,21 @@ function initializeGameVariables() {
     humanMarker.innerHTML = playerPawnConfig.shapeImg ? `<img src="${playerPawnConfig.shapeImg}" alt="Player">` : playerPawnConfig.shapeChar;
     humanMarker.style.backgroundColor = playerPawnConfig.shapeImg ? 'transparent' : playerPawnConfig.color;
     humanMarker.style.setProperty('--pawn-glow-color', `${playerPawnConfig.color}80`);
+
+    // Add these lines in initializeGameVariables:
+    const initialStone = stonesOfFateCoordinates[0]; // Stone 1
+    if (initialStone) {
+        if (humanMarker) {
+            humanMarker.style.left = initialStone.x + 'px';
+            humanMarker.style.top = initialStone.y + 'px';
+        }
+        if (aiMarker) {
+            aiMarker.style.left = initialStone.x + 'px';
+            aiMarker.style.top = initialStone.y + 'px';
+        }
+    }
+    // Ensure updateMapDisplay is called to set initial text scores correctly
+    updateMapDisplay();
 }
 
 function actualStartGame() {
@@ -283,15 +358,18 @@ function actualStartGame() {
     initializeGameVariables(); // This now sets pawn visuals based on playerPawnConfig
     mainMenuScreen.style.display = 'none';
     gameScreen.style.display = 'block';
+    resetAndCreatePlayerTokens(); // Create tokens immediately when game screen is shown
     gameOverScreen.style.display = 'none';
     mapTotalSpacesSpans.forEach(span => span.textContent = MAP_END_POSITION);
     document.querySelectorAll('.map-space-finish').forEach(el => el.classList.add('glowing'));
-    renderCheckpoints();
+    renderCheckpoints(); // Existing call
+    renderStonesOfFate(); // <-- Add this call here
+    updateMapDisplay(); // Ensure text is updated after all rendering
 
-    if(humanScorePosSpan) humanScorePosSpan.textContent = humanMapPosition;
-    if(aiScorePosSpan) aiScorePosSpan.textContent = aiMapPosition;
-    updateMapDisplay(); // Initial map display after pawn visuals are set
-    startNewRound();
+    if(humanScorePosSpan) humanScorePosSpan.textContent = humanMapPosition; // These lines are effectively duplicated by updateMapDisplay
+    if(aiScorePosSpan) aiScorePosSpan.textContent = aiMapPosition;      // but leaving for safety, can be cleaned later.
+    // updateMapDisplay(); // Initial map display after pawn visuals are set - this call is now earlier
+    startNewRound(); // Existing call
 }
 
 // --- Phase 1 & 2: Round Start & Card Dealing ---
@@ -324,6 +402,7 @@ async function startNewRound() {
         if(cs.categoryIcon) cs.categoryIcon.innerHTML = '';
         if(cs.bannerContainer) cs.bannerContainer.innerHTML = '';
         if(cs.particleContainer) cs.particleContainer.innerHTML = '';
+        cs.slot.style.display = 'flex'; // Ensure card slot is visible
     });
     playerTokensOnCards = [0, 0, 0];
 
@@ -537,7 +616,11 @@ function handleCardDrop(e) {
 
         draggedTokenElement = null;
         if (humanTokensSpan) humanTokensSpan.textContent = tokenPool.querySelectorAll('.draggable-token').length;
-        if (confirmBetBtn) { confirmBetBtn.disabled = false; confirmBetBtn.textContent = 'Confirm Bets'; }
+        if (confirmBetBtn) { 
+            confirmBetBtn.disabled = false; 
+            confirmBetBtn.textContent = 'Confirm Bets'; 
+            confirmBetBtn.classList.remove('confirmed'); // Ensure button is not styled as confirmed when enabling
+        }
     }
 }
 
@@ -804,25 +887,56 @@ async function movePawnVisual(pawnElement, targetMapPos, isForward, prevMapPos, 
     await delay(300);
     pawnElement.classList.remove('activating');
 
-    if (stoppedAtCp) { // Already handled stopping at checkpoint logic if applicable
+    if (stoppedAtCp) {
         createShieldEffect(pawnElement);
         playSound('shieldBlockSound');
     }
 
-    const targetPercentage = (targetMapPos / MAP_END_POSITION) * 100;
-    pawnElement.style.left = `${Math.min(100, Math.max(0, targetPercentage))}%`;
-    playSound(isForward ? 'pawnMoveForward' : (targetMapPos === prevMapPos ? 'uiHover' : 'pawnMoveBackward')); // uiHover if no move
-    // createPawnTrail(pawnElement, 5, isForward); // Example trail
-    await delay(600);
-    updateMapDisplay();
+    // Map targetMapPos (0-50) to a stone coordinate
+    let stoneIndex;
+    if (targetMapPos === MAP_START_POSITION) { // Usually 0
+        stoneIndex = 0; // First stone in our 0-indexed array (Stone 1)
+    } else if (targetMapPos >= stonesOfFateCoordinates.length) { // If targetMapPos exceeds defined stones (e.g. 45 stones, target is 46-50)
+        stoneIndex = stonesOfFateCoordinates.length - 1; // Go to the last defined stone (Stone 45)
+    } else {
+        stoneIndex = targetMapPos > 0 ? targetMapPos -1 : 0; // Game position 1 maps to index 0, etc.
+                                                          // Clamp to ensure valid index.
+        stoneIndex = Math.max(0, Math.min(stoneIndex, stonesOfFateCoordinates.length - 1));
+    }
+
+    const targetStone = stonesOfFateCoordinates[stoneIndex];
+
+    if (targetStone) {
+        pawnElement.style.left = targetStone.x + 'px';
+        pawnElement.style.top = targetStone.y + 'px';
+        playSound(isForward ? 'pawnMoveForward' : (targetMapPos === prevMapPos ? 'uiHover' : 'pawnMoveBackward'));
+    } else {
+        console.error("Target stone not found for position:", targetMapPos, "Mapped index:", stoneIndex);
+        // Fallback: position it at the start or end if something is wrong
+        if (targetMapPos >= MAP_END_POSITION / 2) { // Closer to end
+             const lastStone = stonesOfFateCoordinates[stonesOfFateCoordinates.length -1];
+             pawnElement.style.left = lastStone.x + 'px';
+             pawnElement.style.top = lastStone.y + 'px';
+        } else { // Closer to start
+             const firstStone = stonesOfFateCoordinates[0];
+             pawnElement.style.left = firstStone.x + 'px';
+             pawnElement.style.top = firstStone.y + 'px';
+        }
+    }
+    // createPawnTrail(pawnElement, 5, isForward); // Optional
+    await delay(600); // Animation time for movement
+    updateMapDisplay(); // updateMapDisplay primarily updates text now, pawn visuals are set here.
 }
 
-// updateMapDisplay (Ensure it's just updating text, not pawn position directly as movePawnVisual handles that)
 function updateMapDisplay() {
-    if (!humanMarker || !aiMarker || !humanMapPosText || !aiMapPosText) return;
-    // Pawn positions are now set by movePawnVisual via style.left
+    if (!humanMapPosText || !aiMapPosText) return;
+    // Visual pawn positions are set by movePawnVisual. This function now only updates text.
     humanMapPosText.textContent = `${humanMapPosition}/${MAP_END_POSITION}`;
     aiMapPosText.textContent = `${aiMapPosition}/${MAP_END_POSITION}`;
+
+    // Update score board text too
+    if(humanScorePosSpan) humanScorePosSpan.textContent = humanMapPosition;
+    if(aiScorePosSpan) aiScorePosSpan.textContent = aiMapPosition;
 }
 
 // --- Phase 8: End of Round / Transition ---
@@ -997,6 +1111,98 @@ async function animateTokensReturn() {
     tokenPool.innerHTML = ''; // Clear old holsters/tokens
     playSound('tokensCollectToHand');
     await delay(300); // Simulate animation time
+}
+
+function renderStonesOfFate() {
+    const pathContainer = document.getElementById('stones-of-fate-path');
+    if (!pathContainer) {
+        console.error("Stone path container '#stones-of-fate-path' not found!");
+        return;
+    }
+    pathContainer.innerHTML = ''; // Clear any existing stones if re-rendering
+
+    const treasureStoneIds = [7, 13, 19, 25, 31, 37];
+    const lavaStoneIds = [10, 18, 28, 40];
+
+    stonesOfFateCoordinates.forEach(stoneData => {
+        const stoneDiv = document.createElement('div');
+        stoneDiv.classList.add('stone-of-fate');
+        stoneDiv.style.left = stoneData.x + 'px';
+        stoneDiv.style.top = stoneData.y + 'px';
+        stoneDiv.style.zIndex = 10; // Ensure stones are above island but below players initially
+
+        const numberSpan = document.createElement('span');
+        numberSpan.classList.add('stone-number');
+        numberSpan.textContent = stoneData.id;
+        stoneDiv.appendChild(numberSpan);
+
+        stoneDiv.id = `stone-${stoneData.id}`; // Assign an ID to each stone
+
+        // Apply special stone styling
+        if (treasureStoneIds.includes(stoneData.id)) {
+            stoneDiv.classList.add('treasure-chest-stone');
+            const overlayDiv = document.createElement('div');
+            overlayDiv.classList.add('stone-overlay');
+            // The ::before pseudo-element in CSS will add the "T" placeholder
+            stoneDiv.appendChild(overlayDiv);
+             // Make sure number is still visible or styled appropriately
+            numberSpan.style.position = 'relative';
+            numberSpan.style.zIndex = '1'; // Above overlay if overlay is solid
+        }
+
+        if (lavaStoneIds.includes(stoneData.id)) {
+            stoneDiv.classList.add('lava-flow-stone');
+            // The CSS for .lava-flow-stone .stone-number handles text color
+        }
+
+        pathContainer.appendChild(stoneDiv);
+    });
+}
+
+function renderRopeBridgeArrows() {
+    const pathContainer = document.getElementById('stones-of-fate-path');
+    if (!pathContainer) {
+        console.error("Stone path container '#stones-of-fate-path' not found for arrows!");
+        return;
+    }
+
+    // Arrow definitions: [startStoneId, endStoneId]
+    const arrowData = [
+        { startId: 12, endId: 18, id: 'arrow-12-18' },
+        { startId: 27, endId: 33, id: 'arrow-27-33' } // Assuming Stone 27 is { id: 27, x: 453, y: 245 } from previous data
+                                                      // and Stone 33 is { id: 33, x: 539, y: 208 }
+    ];
+
+    arrowData.forEach(arrowInfo => {
+        // stoneData is 0-indexed, stone IDs are 1-indexed
+        const startStone = stonesOfFateCoordinates[arrowInfo.startId - 1];
+        const endStone = stonesOfFateCoordinates[arrowInfo.endId - 1];
+
+        if (!startStone || !endStone) {
+            console.error(`Stones for arrow ${arrowInfo.id} not found.`);
+            return;
+        }
+
+        const arrowDiv = document.createElement('div');
+        arrowDiv.classList.add('rope-bridge-arrow');
+        arrowDiv.id = arrowInfo.id;
+
+        // Calculate position and rotation (simplified)
+        const dx = endStone.x - startStone.x;
+        const dy = endStone.y - startStone.y;
+        const angle = Math.atan2(dy, dx) * (180 / Math.PI); // Angle in degrees
+
+        // Position arrow closer to the start stone, adjust as needed for visual fit
+        // The arrow's CSS has width 64px, height 19.2px.
+        // Offset position to center the arrow image if its origin is top-left.
+        // For a simple rectangle placeholder, this positions its top-left.
+        arrowDiv.style.left = (startStone.x + (dx / 4) - 32) + 'px'; // Example: Place partway, offset by half width
+        arrowDiv.style.top = (startStone.y + (dy / 4) - 9.6)+ 'px'; // Example: Place partway, offset by half height
+        arrowDiv.style.transform = `rotate(${angle}deg)`;
+        arrowDiv.style.zIndex = 15; // Ensure arrows are above stones
+
+        pathContainer.appendChild(arrowDiv);
+    });
 }
 
 // --- Event Listeners & Initialization ---
