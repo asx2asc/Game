@@ -99,7 +99,7 @@
                 <!-- Halftone Grid Overlay (ID 22) - Subtle dot pattern over entire board -->
                 <div id="halftone-grid-overlay"></div>
                 
-                <!-- Island Landmass (ID 3) - Central emerald island -->
+                <!-- Island Landmass (ID 3) - Central cream/white island matching physical board -->
                 <div id="island-landmass">
                     <!-- Palm Silhouettes (ID 20) - Decorative palm trees on island -->
                     <div class="palm-silhouette" id="palm-silhouette-1"></div>
@@ -109,6 +109,27 @@
                     <!-- Cave Mouths (ID 21) - Mysterious cave entrances -->
                     <div class="cave-mouth" id="cave-mouth-1"></div>
                     <div class="cave-mouth" id="cave-mouth-2" style="top: 320px; left: 360px;"></div>
+                    
+                    <!-- Game Track System -->
+                    <div id="game-track-container">
+                        <!-- Central Volcano Feature -->
+                        <div id="volcano-feature">
+                            <div class="volcano-base"></div>
+                            <div class="volcano-smoke"></div>
+                            <div class="volcano-lava"></div>
+                            <div class="volcano-glow"></div>
+                        </div>
+                        
+                        <!-- Track Path SVG for connecting lines -->
+                        <svg id="track-path-svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
+                            <!-- Track path lines will be drawn dynamically -->
+                        </svg>
+                        
+                        <!-- Game Track Spaces -->
+                        <div id="game-track">
+                            <!-- Track spaces will be generated dynamically by JavaScript -->
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Deck Areas Container (IDs 4,5,6) - Card deck areas -->
@@ -342,5 +363,6 @@
 <div id="game-tooltip" style="position:fixed; display:none; background:rgba(0,0,0,0.85); color:white; padding:5px 10px; border-radius:5px; font-size:12px; z-index:9999; pointer-events:none; white-space:nowrap;"></div>
 <!-- <script src="howler.min.js"></script> Potentially for sound -->
 <script src="script.js"></script>
+<script src="track-system.js"></script>
 </body>
 </html>
