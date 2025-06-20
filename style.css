@@ -1452,9 +1452,15 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
     height: 480px; /* 300mm */
     top: 80px; /* 50mm */
     left: 168px; /* 105mm */
-    background-color: var(--island-emerald);
+    background-color: #f5f5dc; /* Cream/beige color to match physical board */
     border: 1.6px solid var(--black); /* 1pt */
-    border-radius: 10px; /* Simplified irregular shape */
+    /* Organic island shape using clip-path */
+    clip-path: polygon(
+        15% 5%, 35% 0%, 65% 3%, 85% 8%, 95% 25%,
+        98% 45%, 95% 65%, 88% 80%, 75% 92%, 60% 98%,
+        40% 97%, 25% 93%, 12% 85%, 5% 70%, 2% 50%,
+        3% 30%, 8% 15%
+    );
     box-shadow: 0 0 0 8px var(--teal-ocean); /* 5mm Teal shoreline glow */
 }
 
@@ -3009,4 +3015,43 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
 .player-marker {
     z-index: 36 !important;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+
+/* --- Game Screen Display Fix --- */
+#game-screen {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #f0f0f0;
+}
+
+/* Ensure board is visible */
+#death-by-coconuts-board {
+    display: block !important;
+    visibility: visible !important;
+}
+
+
+/* Fix board positioning */
+#death-by-coconuts-board {
+    position: relative !important;
+    display: block !important;
+    visibility: visible !important;
+    margin: 20px auto !important;
+    z-index: 1;
+}
+
+/* Ensure game container has enough height */
+#game-container {
+    min-height: 800px;
+}
+
+/* Position the card area below the board */
+#card-display-area {
+    margin-top: 20px;
 }

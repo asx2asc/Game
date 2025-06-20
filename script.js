@@ -149,10 +149,14 @@ function generateTrackSpaces() {
 }
 
 function initializeTrackSystem() {
-    generateTrackSpaces();
-    createTrackSpaces();
-    createTrackPath();
-    updatePlayerPositions();
+    // Call the track generation function from track-system.js
+    console.log('Initializing track system...');
+    if (typeof generateGameTrack === 'function') {
+        console.log('Calling generateGameTrack...');
+        generateGameTrack();
+    } else {
+        console.error('generateGameTrack function not found!');
+    }
 }
 
 function createTrackSpaces() {
@@ -649,7 +653,15 @@ function initializeGameVariables() {
 function actualStartGame() {
     playSound('menuButtonClick');
     setGameState('INITIALIZING_ROUND');
-    initializeGameVariables(); // This now sets pawn visuals based on playerPawnConfig
+    
+    // Ensure the board is visible
+    const board = document.getElementById('death-by-coconuts-board');
+    if (board) {
+        board.style.display = 'block';
+        board.style.visibility = 'visible';
+    }
+    
+    initializeGameVariables(); // This now set
     mainMenuScreen.style.display = 'none';
     gameScreen.style.display = 'block';
     resetAndCreatePlayerTokens(); // Create tokens immediately when game screen is shown

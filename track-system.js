@@ -2,11 +2,17 @@
 
 // Generate track spaces dynamically
 function generateGameTrack() {
+    console.log('generateGameTrack called!');
     const trackContainer = document.getElementById('game-track');
     const pathSvg = document.getElementById('track-path-svg');
     
+    console.log('Track container:', trackContainer);
+    console.log('Path SVG:', pathSvg);
+    
     if (!trackContainer || !pathSvg) {
         console.error('Track containers not found!');
+        console.error('trackContainer:', trackContainer);
+        console.error('pathSvg:', pathSvg);
         return;
     }
     
