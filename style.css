@@ -2202,3 +2202,279 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
     box-shadow: inset 0 0 0 1.6px var(--white); (Inner 1mm White border)
    This seems correct.
 */
+
+
+/* --- Volcano Centerpiece --- */
+#volcano-centerpiece {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 150px;
+    z-index: 20;
+    pointer-events: none;
+}
+
+.volcano-base {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 80px;
+    background: linear-gradient(to top, #4a4a4a 0%, #6a6a6a 50%, #8a8a8a 100%);
+    clip-path: polygon(20% 100%, 80% 100%, 70% 0%, 30% 0%);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.volcano-peak {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 80px;
+}
+
+.lava-glow {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle, #ff6b35 0%, #ff4500 40%, #8b0000 100%);
+    border-radius: 50%;
+    animation: lavaGlow 2s ease-in-out infinite alternate;
+    box-shadow: 0 0 20px #ff4500, 0 0 40px #ff6b35;
+}
+
+@keyframes lavaGlow {
+    0% { 
+        transform: translateX(-50%) scale(1);
+        box-shadow: 0 0 20px #ff4500, 0 0 40px #ff6b35;
+    }
+    100% { 
+        transform: translateX(-50%) scale(1.2);
+        box-shadow: 0 0 30px #ff4500, 0 0 60px #ff6b35, 0 0 80px #ff0000;
+    }
+}
+
+.volcano-smoke {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 60px;
+    background: linear-gradient(to top, rgba(128, 128, 128, 0.8) 0%, rgba(128, 128, 128, 0) 100%);
+    border-radius: 50%;
+    animation: smokeRise 3s ease-out infinite;
+}
+
+@keyframes smokeRise {
+    0% {
+        transform: translateX(-50%) translateY(0) scale(1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateX(-50%) translateY(-30px) scale(1.5);
+        opacity: 0;
+    }
+}
+
+.volcano-label {
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Luckiest Guy', cursive;
+    font-size: 14px;
+    color: #ff4500;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    white-space: nowrap;
+}
+
+/* --- Danger Spaces Styling --- */
+.stone-of-fate.danger-space {
+    background: radial-gradient(circle, #ff6b35 0%, #ff4500 50%, #8b0000 100%);
+    border: 2px solid #ff0000;
+    animation: dangerPulse 1.5s ease-in-out infinite;
+}
+
+.stone-of-fate.danger-space::before {
+    content: '☠️';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    animation: dangerIconBounce 2s ease-in-out infinite;
+}
+
+@keyframes dangerPulse {
+    0%, 100% { 
+        box-shadow: 0 0 5px #ff0000, 0 0 10px #ff4500;
+    }
+    50% { 
+        box-shadow: 0 0 10px #ff0000, 0 0 20px #ff4500, 0 0 30px #ff6b35;
+    }
+}
+
+@keyframes dangerIconBounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-5px); }
+}
+
+/* --- Danger Event Modal --- */
+.danger-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.danger-modal-content {
+    background: linear-gradient(135deg, #2c1810 0%, #4a2c1a 100%);
+    border: 3px solid #ff4500;
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(255, 69, 0, 0.5);
+    animation: modalSlideIn 0.5s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from { 
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to { 
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.danger-icon-container {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    position: relative;
+}
+
+.danger-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px #ff4500);
+}
+
+#danger-event-title {
+    font-family: 'Luckiest Guy', cursive;
+    font-size: 36px;
+    color: #ff4500;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+    margin: 10px 0;
+    animation: titleShake 0.5s ease-in-out;
+}
+
+@keyframes titleShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+#danger-event-message {
+    font-family: 'Baloo Bhai 2', cursive;
+    font-size: 18px;
+    color: #ffd700;
+    margin: 20px 0;
+    line-height: 1.4;
+}
+
+.danger-continue-btn {
+    background: linear-gradient(135deg, #ff6b35 0%, #ff4500 100%);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-family: 'Bangers', cursive;
+    font-size: 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.danger-continue-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(135deg, #ff7b45 0%, #ff5510 100%);
+}
+
+/* --- Enhanced Board Texture --- */
+#death-by-coconuts-board {
+    background-image: 
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 70%),
+        url('assets/textures/sand-texture.png'),
+        linear-gradient(135deg, #87CEEB 0%, #40E0D0 100%);
+    background-blend-mode: overlay, multiply, normal;
+    background-size: cover, 200px 200px, cover;
+    position: relative;
+}
+
+#death-by-coconuts-board::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('assets/textures/palm-leaves-overlay.png') no-repeat;
+    background-position: top right;
+    background-size: 30%;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+/* --- Coconut Animation for Danger Events --- */
+@keyframes coconutFall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+.falling-coconut {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    background-image: url('https://images.pexels.com/photos/1002703/pexels-photo-1002703.jpeg?auto=compress&cs=tinysrgb&w=60&h=60&dpr=1');
+    background-size: contain;
+    background-repeat: no-repeat;
+    border-radius: 50%;
+    z-index: 999;
+    pointer-events: none;
+    animation: coconutFall 2s ease-in forwards;
+}

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danger Space Test - Death by Coconuts</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="test-container" style="padding: 20px; background: #333; color: white;">
+        <h1>🧪 Danger Space Functionality Test</h1>
+        <p>Testing the enhanced Death by Coconuts game features:</p>
+        
+        <div style="margin: 20px 0;">
+            <h3>🌋 Volcano Centerpiece Test</h3>
+            <div id="volcano-centerpiece">
+                <div class="volcano-base"></div>
+                <div class="volcano-peak">
+                    <div class="lava-glow"></div>
+                    <div class="volcano-smoke"></div>
+                </div>
+                <div class="volcano-label">VOLCANO OF DOOM</div>
+            </div>
+            <p>✅ Volcano should be visible with glowing lava and smoke animation</p>
+        </div>
+
+        <div style="margin: 20px 0;">
+            <h3>⚠️ Danger Space Test</h3>
+            <button onclick="testDangerSpace(5)" style="margin: 5px; padding: 10px; background: #ff4500; color: white; border: none; border-radius: 5px;">
+                Test Coconut Fall (Space 5)
+            </button>
+            <button onclick="testDangerSpace(11)" style="margin: 5px; padding: 10px; background: #ff4500; color: white; border: none; border-radius: 5px;">
+                Test Slip (Space 11)
+            </button>
+            <button onclick="testDangerSpace(29)" style="margin: 5px; padding: 10px; background: #ff4500; color: white; border: none; border-radius: 5px;">
+                Test Volcano Rumble (Space 29)
+            </button>
+        </div>
+
+        <div style="margin: 20px 0;">
+            <h3>🥥 Falling Coconut Test</h3>
+            <button onclick="createFallingCoconuts()" style="margin: 5px; padding: 10px; background: #8b4513; color: white; border: none; border-radius: 5px;">
+                Trigger Coconut Storm
+            </button>
+        </div>
+
+        <div id="test-results" style="margin: 20px 0; padding: 15px; background: #444; border-radius: 5px;">
+            <h3>📊 Test Results:</h3>
+            <div id="results-log"></div>
+        </div>
+    </div>
+
+    <!-- Danger Event Modal -->
+    <div id="danger-event-modal" class="danger-modal" style="display: none;">
+        <div class="danger-modal-content">
+            <div class="danger-icon-container">
+                <img id="danger-event-icon" class="danger-icon" src="" alt="Danger">
+            </div>
+            <h2 id="danger-event-title">DANGER!</h2>
+            <p id="danger-event-message"></p>
+            <button id="danger-event-continue" class="danger-continue-btn">Continue</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Test functions
+        function testDangerSpace(spaceNumber) {
+            logResult(`Testing danger space ${spaceNumber}...`);
+            
+            if (typeof checkForDangerSpace === 'function') {
+                checkForDangerSpace('human', spaceNumber);
+                logResult(`✅ Danger space ${spaceNumber} test triggered successfully`);
+            } else {
+                logResult(`❌ checkForDangerSpace function not found`);
+            }
+        }
+
+        function logResult(message) {
+            const log = document.getElementById('results-log');
+            const timestamp = new Date().toLocaleTimeString();
+            log.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+        }
+
+        // Test volcano animations on load
+        window.addEventListener('load', function() {
+            logResult('🌋 Volcano centerpiece loaded');
+            logResult('⚠️ Danger space system initialized');
+            logResult('🎮 Test interface ready');
+            
+            // Test if danger spaces are defined
+            if (typeof dangerSpaces !== 'undefined') {
+                const spaceCount = Object.keys(dangerSpaces).length;
+                logResult(`✅ Found ${spaceCount} danger spaces defined`);
+            } else {
+                logResult('❌ Danger spaces not defined');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,6 +1,63 @@
 // --- Global Game State Variable ---
 let gameState = 'MENU';
 
+// Define danger spaces and their effects
+const dangerSpaces = {
+    5: { 
+        type: 'COCONUT_FALL', 
+        message: 'A coconut falls on your head! Go back 3 spaces.', 
+        effect: 'moveBack', 
+        spaces: 3,
+        icon: 'https://images.pexels.com/photos/1002703/pexels-photo-1002703.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1'
+    },
+    11: { 
+        type: 'SLIP', 
+        message: 'You slip on a banana peel! Miss your next turn.', 
+        effect: 'skipTurn', 
+        icon: 'https://images.pexels.com/photos/2872755/pexels-photo-2872755.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1'
+    },
+    17: { 
+        type: 'CRAB_ATTACK', 
+        message: 'Angry crabs pinch your toes! Move back 2 spaces.', 
+        effect: 'moveBack', 
+        spaces: 2,
+        icon: 'https://images.pexels.com/photos/1618606/pexels-photo-1618606.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1'
+    },
+    23: { 
+        type: 'QUICKSAND', 
+        message: 'You step in quicksand! Lose a betting token.', 
+        effect: 'loseToken', 
+        icon: 'https://images.pexels.com/photos/1624496/pexels-photo-1624496.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1'
+    },
+    29: { 
+        type: 'VOLCANO_RUMBLE', 
+        message: 'The volcano rumbles ominously! All players move back 1 space.', 
+        effect: 'allMoveBack', 
+        spaces: 1,
+        icon: 'https://images.pexels.com/photos/2166711/pexels-photo-2166711.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1'
+    },
+    35: { 
+        type: 'COCONUT_STORM', 
+        message: 'Coconut storm! Take cover and go back 4 spaces.', 
+        effect: 'moveBack', 
+        spaces: 4,
+        icon: 'https://images.pexels.com/photos/1002703/pexels-photo-1002703.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1'
+    },
+    41: { 
+        type: 'LAVA_SPLASH', 
+        message: 'Hot lava splashes nearby! Sprint back 5 spaces!', 
+        effect: 'moveBack', 
+        spaces: 5,
+        icon: 'https://images.pexels.com/photos/2166711/pexels-photo-2166711.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1'
+    }
+};
+
+// Track skip turn status
+let playerSkipTurn = {
+    human: false,
+    ai: false
+};
+
 // Fully defined Stones of Fate Coordinates (0-indexed array for stones 1-45)
 // array[0] is Stone 1, array[44] is Stone 45.
 const stonesOfFateCoordinates = [
@@ -204,8 +261,98 @@ function animatePlayerMovement(playerType, fromSpace, toSpace) {
         
         if (currentStep >= steps) {
             clearInterval(animationInterval);
+            // Check for danger space after movement completes
+            checkForDangerSpace(playerType, toSpace);
         }
     }, 200); // 200ms per space
+}
+
+// Check if player landed on a danger space
+function checkForDangerSpace(playerType, spaceNumber) {
+    if (dangerSpaces[spaceNumber]) {
+        const danger = dangerSpaces[spaceNumber];
+        showDangerEvent(playerType, danger);
+    }
+}
+
+// Show danger event modal
+function showDangerEvent(playerType, danger) {
+    const modal = document.getElementById('danger-event-modal');
+    const icon = document.getElementById('danger-event-icon');
+    const title = document.getElementById('danger-event-title');
+    const message = document.getElementById('danger-event-message');
+    const continueBtn = document.getElementById('danger-event-continue');
+    
+    // Set modal content
+    icon.src = danger.icon;
+    title.textContent = 'DANGER!';
+    message.textContent = danger.message;
+    
+    // Show modal
+    modal.style.display = 'flex';
+    
+    // Add coconut falling animation for coconut events
+    if (danger.type === 'COCONUT_FALL' || danger.type === 'COCONUT_STORM') {
+        createFallingCoconuts();
+    }
+    
+    // Handle continue button
+    continueBtn.onclick = () => {
+        modal.style.display = 'none';
+        applyDangerEffect(playerType, danger);
+    };
+}
+
+// Create falling coconut animations
+function createFallingCoconuts() {
+    const coconutCount = 3 + Math.floor(Math.random() * 3); // 3-5 coconuts
+    
+    for (let i = 0; i < coconutCount; i++) {
+        setTimeout(() => {
+            const coconut = document.createElement('div');
+            coconut.className = 'falling-coconut';
+            coconut.style.left = Math.random() * window.innerWidth + 'px';
+            document.body.appendChild(coconut);
+            
+            // Remove after animation
+            coconut.addEventListener('animationend', () => {
+                coconut.remove();
+            });
+        }, i * 200); // Stagger the coconuts
+    }
+}
+
+// Apply the danger effect
+function applyDangerEffect(playerType, danger) {
+    switch (danger.effect) {
+        case 'moveBack':
+            const currentPos = playerType === 'human' ? humanMapPosition : aiMapPosition;
+            const newPos = Math.max(1, currentPos - danger.spaces);
+            movePlayerToSpace(playerType, newPos, true);
+            updateInfoMessage(`${playerType === 'human' ? 'You' : 'AI'} moved back ${danger.spaces} spaces!`);
+            break;
+            
+        case 'skipTurn':
+            playerSkipTurn[playerType] = true;
+            updateInfoMessage(`${playerType === 'human' ? 'You' : 'AI'} will miss the next turn!`);
+            break;
+            
+        case 'loseToken':
+            if (playerType === 'human' && humanTokens > 0) {
+                humanTokens--;
+                updateTokenDisplay();
+                updateInfoMessage('You lost a betting token!');
+            }
+            break;
+            
+        case 'allMoveBack':
+            const humanNewPos = Math.max(1, humanMapPosition - danger.spaces);
+            const aiNewPos = Math.max(1, aiMapPosition - danger.spaces);
+            movePlayerToSpace('human', humanNewPos, true);
+            setTimeout(() => movePlayerToSpace('ai', aiNewPos, true), 500);
+            updateInfoMessage('The volcano rumbles! All players move back!');
+            break;
+    }
 }
 
 // --- Sound Engine (Howler.js Placeholder) ---
@@ -1305,6 +1452,12 @@ function renderStonesOfFate() {
         if (lavaStoneIds.includes(stoneData.id)) {
             stoneDiv.classList.add('lava-flow-stone');
             // The CSS for .lava-flow-stone .stone-number handles text color
+        }
+        
+        // Check if this is a danger space
+        if (dangerSpaces[stoneData.id]) {
+            stoneDiv.classList.add('danger-space');
+            stoneDiv.title = `Danger! ${dangerSpaces[stoneData.id].type.replace(/_/g, ' ')}`;
         }
 
         pathContainer.appendChild(stoneDiv);
