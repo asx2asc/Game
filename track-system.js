@@ -250,3 +250,75 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 500);
 });
+
+
+// Debug code for track visibility
+
+// Add debug logging to track generation
+const originalGenerateGameTrack = generateGameTrack;
+generateGameTrack = function() {
+    console.log('[TRACK DEBUG] Starting track generation...');
+    const trackContainer = document.getElementById('game-track');
+    const pathSvg = document.getElementById('track-path-svg');
+    
+    console.log('[TRACK DEBUG] Track container found:', !!trackContainer);
+    console.log('[TRACK DEBUG] Path SVG found:', !!pathSvg);
+    console.log('[TRACK DEBUG] Stones coordinates available:', stonesOfFateCoordinates.length);
+    
+    if (!trackContainer || !pathSvg) {
+        console.error('[TRACK DEBUG] Required containers not found!');
+        return;
+    }
+    
+    // Call original function
+    originalGenerateGameTrack();
+    
+    // Log results
+    const spacesCreated = trackContainer.querySelectorAll('.track-space').length;
+    console.log('[TRACK DEBUG] Spaces created:', spacesCreated);
+    console.log('[TRACK DEBUG] Track generation complete!');
+};
+
+
+// Robust initialization code
+
+// Immediate track initialization
+window.addEventListener('load', function() {
+    console.log('[TRACK INIT] Window loaded, checking game state...');
+    
+    // Force track generation after a short delay
+    setTimeout(function() {
+        if (document.getElementById('game-track-container')) {
+            console.log('[TRACK INIT] Forcing track generation...');
+            generateGameTrack();
+            
+            // Also update player positions if game has started
+            if (window.humanPosition !== undefined) {
+                updatePlayerPositionOnTrack('human', window.humanPosition || 0);
+            }
+            if (window.aiPosition !== undefined) {
+                updatePlayerPositionOnTrack('ai', window.aiPosition || 0);
+            }
+        }
+    }, 1000);
+});
+
+// Also hook into game state changes
+if (window.gameState) {
+    const originalSetState = window.setGameState || function() {};
+    window.setGameState = function(newState) {
+        console.log('[TRACK INIT] Game state changing to:', newState);
+        originalSetState(newState);
+        
+        if (newState === 'INITIALIZING_ROUND' || newState === 'BETTING_PHASE') {
+            setTimeout(function() {
+                if (!document.querySelector('.track-space')) {
+                    console.log('[TRACK INIT] No track spaces found, generating...');
+                    generateGameTrack();
+                    updatePlayerPositionOnTrack('human', window.humanPosition || 0);
+                    updatePlayerPositionOnTrack('ai', window.aiPosition || 0);
+                }
+            }, 500);
+        }
+    };
+}
