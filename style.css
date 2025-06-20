@@ -1530,6 +1530,108 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
     right: 20px;
 }
 
+/* Track Spaces - Individual numbered spaces (1-50) */
+#track-spaces-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+
+.track-space {
+    position: absolute;
+    width: 24px;  /* ~15mm */
+    height: 24px; /* ~15mm */
+    background-color: var(--white);
+    border: 1px solid var(--black);
+    border-radius: 50%; /* Circular spaces */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+    color: var(--black);
+    z-index: 10;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.track-space:hover {
+    transform: scale(1.2);
+    background-color: var(--sunshine-yellow);
+    z-index: 20;
+}
+
+/* Space number styling */
+.track-space .space-number {
+    font-family: var(--font-baloo);
+    font-size: 8px;
+    color: var(--black);
+    font-weight: bold;
+}
+
+/* Special space types */
+.track-space.start-space {
+    background-color: var(--island-emerald);
+    border: 2px solid var(--royal-purple);
+}
+
+.track-space.finish-space {
+    background-color: var(--sunshine-yellow);
+    border: 2px solid var(--royal-purple);
+}
+
+/* Player pawn on space */
+.track-space .player-pawn {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    z-index: 15;
+    border: 2px solid var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.track-space .player-pawn.human-pawn {
+    background-color: #007bff;
+    color: var(--white);
+}
+
+.track-space .player-pawn.ai-pawn {
+    background-color: #dc3545;
+    color: var(--white);
+}
+
+/* Track path visualization */
+.track-path {
+    position: absolute;
+    z-index: 5;
+    stroke: var(--white);
+    stroke-width: 3px;
+    fill: none;
+    opacity: 0.8;
+}
+
+.track-path-segment {
+    stroke-dasharray: 5,3;
+    animation: pathFlow 3s linear infinite;
+}
+
+@keyframes pathFlow {
+    0% { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: 16; }
+}
+
 #betting-caption { /* ID 7 */
     position: absolute;
     top: 115.2px; /* 72mm */

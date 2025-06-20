@@ -61,6 +61,153 @@ const stonesOfFateCoordinates = [
     { id: 45, x: 688, y: 144 }   // Stone 45
 ];
 
+// --- Track Spaces System (1-50) ---
+// Generate track spaces coordinates based on existing stones coordinates
+// Extends the path to reach 50 spaces total
+const TRACK_SPACES = [];
+
+function generateTrackSpaces() {
+    // Use existing stones coordinates (1-45) and extend to 50
+    for (let i = 0; i < stonesOfFateCoordinates.length; i++) {
+        const stone = stonesOfFateCoordinates[i];
+        TRACK_SPACES.push({
+            space: stone.id,
+            x: stone.x,
+            y: stone.y,
+            type: stone.id === 1 ? 'start' : 'normal'
+        });
+    }
+    
+    // Add 5 more spaces (46-50) extending the path to finish
+    const lastStone = stonesOfFateCoordinates[stonesOfFateCoordinates.length - 1];
+    for (let i = 46; i <= 50; i++) {
+        const progress = (i - 45) / 5; // 0 to 1
+        TRACK_SPACES.push({
+            space: i,
+            x: lastStone.x + (progress * 20), // Extend 20px to the right
+            y: lastStone.y - (progress * 10), // Slightly upward
+            type: i === 50 ? 'finish' : 'normal'
+        });
+    }
+}
+
+function initializeTrackSystem() {
+    generateTrackSpaces();
+    createTrackSpaces();
+    createTrackPath();
+    updatePlayerPositions();
+}
+
+function createTrackSpaces() {
+    const container = document.getElementById('track-spaces-container');
+    if (!container) return;
+    
+    container.innerHTML = ''; // Clear existing spaces
+    
+    TRACK_SPACES.forEach(space => {
+        const spaceElement = document.createElement('div');
+        spaceElement.className = `track-space ${space.type}-space`;
+        spaceElement.id = `space-${space.space}`;
+        spaceElement.setAttribute('data-space', space.space);
+        spaceElement.style.left = `${space.x - 12}px`; // Center the 24px space
+        spaceElement.style.top = `${space.y - 12}px`;
+        
+        const numberSpan = document.createElement('span');
+        numberSpan.className = 'space-number';
+        numberSpan.textContent = space.space;
+        spaceElement.appendChild(numberSpan);
+        
+        container.appendChild(spaceElement);
+    });
+}
+
+function createTrackPath() {
+    const pathElement = document.getElementById('track-path');
+    if (!pathElement || TRACK_SPACES.length === 0) return;
+    
+    let pathData = `M${TRACK_SPACES[0].x},${TRACK_SPACES[0].y}`;
+    
+    for (let i = 1; i < TRACK_SPACES.length; i++) {
+        const space = TRACK_SPACES[i];
+        pathData += ` L${space.x},${space.y}`;
+    }
+    
+    pathElement.setAttribute('d', pathData);
+}
+
+function updatePlayerPositions() {
+    // Clear existing pawns from all spaces
+    document.querySelectorAll('.track-space .player-pawn').forEach(pawn => pawn.remove());
+    
+    // Position human player
+    if (humanMapPosition > 0 && humanMapPosition <= TRACK_SPACES.length) {
+        const spaceElement = document.getElementById(`space-${humanMapPosition}`);
+        if (spaceElement) {
+            const pawn = document.createElement('div');
+            pawn.className = 'player-pawn human-pawn';
+            pawn.textContent = 'H';
+            spaceElement.appendChild(pawn);
+        }
+    }
+    
+    // Position AI player
+    if (aiMapPosition > 0 && aiMapPosition <= TRACK_SPACES.length) {
+        const spaceElement = document.getElementById(`space-${aiMapPosition}`);
+        if (spaceElement) {
+            const pawn = document.createElement('div');
+            pawn.className = 'player-pawn ai-pawn';
+            pawn.textContent = 'A';
+            
+            // Handle multiple players on same space
+            const existingPawns = spaceElement.querySelectorAll('.player-pawn');
+            if (existingPawns.length > 0) {
+                pawn.style.top = '-25px';
+                pawn.style.left = '8px';
+            }
+            
+            spaceElement.appendChild(pawn);
+        }
+    }
+}
+
+function movePlayerToSpace(playerType, newSpace, animated = true) {
+    const currentSpace = playerType === 'human' ? humanMapPosition : aiMapPosition;
+    
+    if (animated && currentSpace > 0) {
+        animatePlayerMovement(playerType, currentSpace, newSpace);
+    } else {
+        if (playerType === 'human') {
+            humanMapPosition = newSpace;
+        } else {
+            aiMapPosition = newSpace;
+        }
+        updatePlayerPositions();
+    }
+}
+
+function animatePlayerMovement(playerType, fromSpace, toSpace) {
+    const steps = Math.abs(toSpace - fromSpace);
+    const direction = toSpace > fromSpace ? 1 : -1;
+    let currentStep = 0;
+    
+    const animationInterval = setInterval(() => {
+        currentStep++;
+        const currentSpace = fromSpace + (currentStep * direction);
+        
+        if (playerType === 'human') {
+            humanMapPosition = currentSpace;
+        } else {
+            aiMapPosition = currentSpace;
+        }
+        
+        updatePlayerPositions();
+        
+        if (currentStep >= steps) {
+            clearInterval(animationInterval);
+        }
+    }, 200); // 200ms per space
+}
+
 // --- Sound Engine (Howler.js Placeholder) ---
 const sounds = {
     // UI & Menu
@@ -364,6 +511,7 @@ function actualStartGame() {
     document.querySelectorAll('.map-space-finish').forEach(el => el.classList.add('glowing'));
     renderCheckpoints(); // Existing call
     renderStonesOfFate(); // <-- Add this call here
+    initializeTrackSystem(); // Initialize the new track spaces system
     updateMapDisplay(); // Ensure text is updated after all rendering
 
     if(humanScorePosSpan) humanScorePosSpan.textContent = humanMapPosition; // These lines are effectively duplicated by updateMapDisplay
@@ -926,6 +1074,7 @@ async function movePawnVisual(pawnElement, targetMapPos, isForward, prevMapPos, 
     // createPawnTrail(pawnElement, 5, isForward); // Optional
     await delay(600); // Animation time for movement
     updateMapDisplay(); // updateMapDisplay primarily updates text now, pawn visuals are set here.
+    updatePlayerPositions(); // Update track spaces after pawn movement
 }
 
 function updateMapDisplay() {
@@ -937,6 +1086,9 @@ function updateMapDisplay() {
     // Update score board text too
     if(humanScorePosSpan) humanScorePosSpan.textContent = humanMapPosition;
     if(aiScorePosSpan) aiScorePosSpan.textContent = aiMapPosition;
+    
+    // Update track spaces positions
+    updatePlayerPositions();
 }
 
 // --- Phase 8: End of Round / Transition ---
