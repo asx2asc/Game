@@ -16,7 +16,7 @@
     <!-- Phase 0: Main Menu Screen -->
     <div id="main-menu-screen">
         <div class="main-menu-background"></div>
-        <img src="assets/images/logo_death_by_coconuts.jpg" alt="Death by Coconuts Logo" id="game-logo"> <!-- Official Death by Coconuts Logo -->
+        <img src="assets/images/logo_death_by_coconuts.jpg?v=2" alt="Death by Coconuts Logo" id="game-logo" onerror="console.log('Logo failed to load'); this.style.display='none';" onload="console.log('Logo loaded successfully');"> <!-- Official Death by Coconuts Logo -->
         <div class="menu-buttons">
             <button id="start-new-game-btn" class="menu-button">START NEW GAME</button>
             <button id="how-to-play-btn" class="menu-button">HOW TO PLAY</button>
