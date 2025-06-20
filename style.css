@@ -1468,28 +1468,66 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
 
 .deck-area {
     width: 96px; /* 60mm */
-    height: 64px; /* 40mm */
-    background-color: var(--island-emerald);
+    height: 80px; /* Enhanced height for better proportions */
+    background: linear-gradient(145deg, var(--island-emerald), #007a6b);
     border: 3.2px solid var(--royal-purple); /* 2pt */
-    box-shadow: inset 0 0 0 1.6px var(--white); /* 1mm White inner border */
+    box-shadow: inset 0 0 0 1.6px var(--white), 0 4px 8px rgba(0,0,0,0.3); /* Inner border + drop shadow */
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* Titles at the top */
-    padding: 5px;
+    justify-content: space-between;
+    padding: 8px;
     box-sizing: border-box;
+    border-radius: 8px;
 }
 
 .deck-title {
     background-color: var(--royal-purple);
     color: var(--white);
-    font-family: var(--font-baloo, 'Comic Sans MS', cursive); /* Added fallback for Baloo */
-    font-size: 14px;
-    padding: 3px 8px;
+    font-family: var(--font-baloo, 'Comic Sans MS', cursive);
+    font-size: 12px;
+    font-weight: bold;
+    padding: 4px 6px;
     width: 100%;
     text-align: center;
     box-sizing: border-box;
-    margin-bottom: 5px; /* Space between title and card area */
+    border-radius: 4px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.deck-card-stack {
+    font-size: 28px;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
+    transition: transform 0.2s ease;
+}
+
+.deck-area:hover .deck-card-stack {
+    transform: scale(1.1);
+}
+
+/* Track Labels */
+.track-label {
+    position: absolute;
+    font-family: var(--font-baloo, 'Comic Sans MS', cursive);
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--black);
+    background: rgba(255,255,255,0.9);
+    padding: 4px 8px;
+    border-radius: 12px;
+    border: 1px solid var(--black);
+    z-index: 15;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+#track-start-label {
+    bottom: 20px;
+    left: 20px;
+}
+
+#track-finish-label {
+    top: 20px;
+    right: 20px;
 }
 
 #betting-caption { /* ID 7 */
@@ -1517,14 +1555,35 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
 }
 
 .betting-counter {
-    width: 19.2px; /* Ø12mm */
-    height: 19.2px;
+    width: 40px; /* Enhanced size for better visibility */
+    height: 40px;
     border-radius: 50%;
-    border: 1.6px solid var(--black);
+    border: 2px solid var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+    filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.4));
+    cursor: pointer;
+    transition: transform 0.2s ease;
 }
-#betting-counter-1 { background-color: var(--royal-purple); }
-#betting-counter-2 { background-color: var(--sunshine-yellow); }
-#betting-counter-3 { background-color: var(--teal-ocean); }
+.betting-counter:hover {
+    transform: scale(1.1);
+}
+#betting-counter-1 { 
+    background: radial-gradient(circle, var(--royal-purple), #5a2d91);
+    color: var(--white);
+}
+#betting-counter-2 { 
+    background: radial-gradient(circle, var(--sunshine-yellow), #e6c200);
+    color: var(--black);
+}
+#betting-counter-3 { 
+    background: radial-gradient(circle, var(--teal-ocean), #00a693);
+    color: var(--white);
+}
 
 
 #coconut-beach-start { /* ID 9 */
@@ -1661,19 +1720,30 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
     left: 368px;
     width: 64px;
     height: 64px;
-    background-color: var(--white); /* Spokes remain complex */
     border: 1.6px solid var(--black);
     border-radius: 50%;
+    background: radial-gradient(circle, var(--white) 0%, var(--teal-ocean) 70%, var(--black) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Add background image for the skull */
-    background-image: url('assets/icons/skull_white.svg'); /* Developer note: Reusing skull_white.svg. This is a placeholder for a specific 'coconut-skull' if one is created. */
-    background-size: 60%; /* Scale skull to fit center */
-    background-repeat: no-repeat;
-    background-position: center;
-    /* filter: brightness(0) invert(1); /* REMOVE/COMMENT OUT: Assumes skull_white.svg is already white */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    z-index: 10;
 }
+.compass-center {
+    font-size: 20px;
+    z-index: 11;
+}
+.compass-spoke {
+    position: absolute;
+    font-size: 10px;
+    font-weight: bold;
+    color: var(--black);
+    font-family: var(--font-futura);
+}
+.compass-north { top: 3px; left: 50%; transform: translateX(-50%); }
+.compass-south { bottom: 3px; left: 50%; transform: translateX(-50%); }
+.compass-east { right: 5px; top: 50%; transform: translateY(-50%); }
+.compass-west { left: 5px; top: 50%; transform: translateY(-50%); }
 
 /* Player Markers - New Styling for Board Game Context */
 /* The old .player-marker styles (around line 350-380 in the original file) are now overridden by this new rule.
@@ -1727,17 +1797,20 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
 }
 
 /* --- Decorative Elements (Ocean/Board) --- */
-#octopus-tentacle { /* Placeholder style */
+#octopus-tentacle {
     position: absolute;
-    bottom: -20px; /* Example positioning */
-    left: 20px;  /* Example positioning */
-    width: 150px; /* Example size */
-    height: 100px; /* Example size */
-    /* background-image: url('assets/images/octopus_tentacle.svg'); CREATE THIS */
-    background-repeat: no-repeat;
-    background-size: contain;
-    opacity: 0.8;
-    z-index: 5; /* Below markers but above background */
+    bottom: 20px;
+    right: 30px;
+    width: 120px;
+    height: 80px;
+    opacity: 0.6;
+    z-index: 5;
+    font-size: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(-15deg);
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
 }
 
 #halftone-grid-overlay { /* Placeholder style */
@@ -1855,41 +1928,56 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
     z-index: 5;
 }
 
-/* Palm Silhouettes (ID 20) - General class, JS might add multiple */
+/* Palm Silhouettes (ID 20) - CSS-based palm trees */
 .palm-silhouette {
     position: absolute;
     width: 56px;
     height: 80px;
-    background-color: transparent; /* Remove placeholder */
-    background-image: url('assets/images/palm_silhouette_single.svg'); /* Developer note: Original was 081.svg (palm_silhouette_set.svg); select/extract a representative silhouette and name it palm_silhouette_single.svg */
-    background-size: contain; /* Shows the whole set, may need specific SVG targeting */
-    background-repeat: no-repeat;
-    background-position: center;
-    opacity: 0.5;
+    opacity: 0.6;
     z-index: 6;
+    font-size: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
 }
-/* Example placement for one palm */
+.palm-silhouette::before {
+    content: '🌴';
+    color: var(--island-emerald);
+    filter: brightness(0.7);
+}
+/* Palm tree positions */
 #palm-silhouette-1 {
     top: 128px; /* 80mm */
     left: 224px; /* 140mm */
 }
+#palm-silhouette-2 {
+    transform: rotate(15deg);
+}
+#palm-silhouette-3 {
+    transform: rotate(-10deg);
+}
 
-/* Cave Mouths (ID 21) - General class */
+/* Cave Mouths (ID 21) - CSS-based cave entrances */
 .cave-mouth {
     position: absolute;
     width: 40px;
     height: 28.8px;
-    background-color: transparent; /* Remove placeholder */
-    border: none; /* Remove placeholder border */
-    border-radius: 0; /* Remove placeholder shape */
-    background-image: url('assets/images/cave_mouth_isolated.svg'); /* Developer note: Original was Cho-Long-Vang-06.svg (cave_entrance_scene.svg); isolate cave mouth part and name it cave_mouth_isolated.svg */
-    background-size: cover; /* Or contain, adjust to show cave mouth part */
-    background-repeat: no-repeat;
-    background-position: center; /* Adjust if needed to focus on mouth */
-    opacity: 0.7; /* As per spec: 70% Emerald (achieved via opacity if SVG is full emerald color) */
+    opacity: 0.7;
     z-index: 7;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    background: radial-gradient(ellipse at center, #2c3e50 0%, #34495e 50%, transparent 100%);
+    filter: drop-shadow(1px 1px 3px rgba(0,0,0,0.5));
 }
-/* Example placement for one cave */
+.cave-mouth::before {
+    content: '🕳️';
+    filter: brightness(0.6) sepia(1) hue-rotate(120deg);
+}
+/* Cave positions */
 #cave-mouth-1 {
     top: 240px; /* 150mm */
     left: 288px; /* 180mm */
@@ -1916,14 +2004,71 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
     filter: drop-shadow(1.6px 1.6px 0px rgba(0,0,0,0.2)); /* 1mm offset, 20% opacity */
 }
 
+/* Track Labels */
+.track-label {
+    position: absolute;
+    font-family: var(--font-futura);
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--black);
+    background: rgba(255,255,255,0.9);
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--black);
+    z-index: 15;
+}
+
+#track-start-label {
+    bottom: 40px;
+    left: 40px;
+}
+
+#track-finish-label {
+    top: 40px;
+    right: 40px;
+}
+
+/* Treasure Chest Overlay */
+#treasure-chest-overlay {
+    position: absolute;
+    top: 80px;
+    right: 80px;
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, var(--sunshine-yellow), #e6c200);
+    border: 2px solid var(--black);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 12;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.treasure-chest-icon {
+    font-size: 32px;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
+}
+
+.treasure-chest-label {
+    font-family: var(--font-futura);
+    font-size: 10px;
+    font-weight: bold;
+    color: var(--black);
+    margin-top: 4px;
+}
+
 /* Apply specific fonts more broadly if needed, e.g. body or #game-container */
 #death-by-coconuts-board { /* Ensure board context uses thematic fonts where not overridden */
     font-family: var(--font-baloo); /* Default label font */
 }
-#death-by-coconuts-board .title-script { /* Class for Pacifico titles */
+
+.title-script {
     font-family: var(--font-pacifico);
 }
-#death-by-coconuts-board .body-condensed { /* Class for Futura text */
+
+.body-condensed {
     font-family: var(--font-futura);
 }
 
