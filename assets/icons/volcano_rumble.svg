@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="volcanoGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#8B4513;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#A0522D;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF4500;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="lavaGrad">
+      <stop offset="0%" style="stop-color:#FF6B00;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF0000;stop-opacity:1" />
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- Volcano shape -->
+  <path d="M20 80 L35 40 L40 35 L60 35 L65 40 L80 80 Z" fill="url(#volcanoGrad)"/>
+  <!-- Crater -->
+  <ellipse cx="50" cy="35" rx="10" ry="5" fill="#2C1810"/>
+  <!-- Lava eruption -->
+  <ellipse cx="50" cy="35" rx="8" ry="4" fill="url(#lavaGrad)" filter="url(#glow)"/>
+  <path d="M50 35 Q45 20 48 10 Q50 5 52 10 Q55 20 50 35" fill="#FF4500" opacity="0.8" filter="url(#glow)"/>
+  <!-- Smoke clouds -->
+  <circle cx="45" cy="15" r="6" fill="#666" opacity="0.6"/>
+  <circle cx="50" cy="10" r="8" fill="#666" opacity="0.5"/>
+  <circle cx="55" cy="12" r="7" fill="#666" opacity="0.4"/>
+  <!-- Rumble lines -->
+  <path d="M10 85 L15 83" stroke="#FF0000" stroke-width="2"/>
+  <path d="M85 85 L90 83" stroke="#FF0000" stroke-width="2"/>
+  <path d="M30 85 L32 82" stroke="#FF0000" stroke-width="2"/>
+  <path d="M70 85 L68 82" stroke="#FF0000" stroke-width="2"/>
+</svg>

@@ -119,18 +119,27 @@ body {
 
 /* --- Game Screen --- */
 #game-container {
-    background-color: #fff; /* Fallback for game board surface */
-    background-image: url('assets/textures/game_board_main_texture.png'); /* CREATE THIS: subtle main board texture */
+    background-color: #87CEEB; /* Sky blue fallback */
+    background-image: 
+        linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)),
+        url('assets/textures/tropical_board_bg.jpg');
     background-size: cover;
+    background-position: center;
+    background-blend-mode: overlay;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    border-radius: 12px;
+    box-shadow: 
+        0 0 30px rgba(0,0,0,0.4),
+        inset 0 0 20px rgba(255,255,255,0.2),
+        0 5px 15px rgba(0,0,0,0.3);
     width: 100%;
     max-width: 900px;
     text-align: center;
     position: relative;
-    transition: transform 0.4s ease-out; /* For zoom focus */
+    transition: transform 0.4s ease-out;
+    border: 3px solid #8B4513; /* Wood-like border */
 }
+
 #game-container.game-ended-focus-zoom {
     /* Example: transform: scale(1.1) translateY(-50px); */
     /* JS will need to calculate transform to focus on finish line */
@@ -2589,15 +2598,15 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
 }
 
 .coconut-icon {
-    background-image: url('assets/icons/coconut.svg');
+    background-image: url('assets/icons/coconut_danger.svg');
 }
 
 .slip-icon {
-    background-image: url('assets/icons/banana.svg');
+    background-image: url('assets/icons/banana_slip.svg');
 }
 
 .crab-icon {
-    background-image: url('assets/icons/crab.svg');
+    background-image: url('assets/icons/crab_danger.svg');
 }
 
 .quicksand-icon {
@@ -2605,7 +2614,96 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
 }
 
 .volcano-icon {
-    background-image: url('assets/icons/volcano.svg');
+    background-image: url('assets/icons/volcano_rumble.svg');
+}
+
+
+/* Enhanced Danger Space Styling */
+.track-space.danger-space {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+    border-color: #c44569;
+    position: relative;
+    overflow: visible;
+}
+
+.track-space.danger-space::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    background: linear-gradient(45deg, #ff6b6b, #feca57, #ff6b6b);
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0.6;
+    animation: dangerGlow 2s linear infinite;
+}
+
+@keyframes dangerGlow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.danger-icon {
+    width: 30px;
+    height: 30px;
+    top: -10px;
+    right: -10px;
+    background-color: white;
+    border-radius: 50%;
+    padding: 3px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    animation: iconBounce 2s ease-in-out infinite;
+}
+
+@keyframes iconBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+/* Enhanced tooltips for danger spaces */
+.track-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 100;
+    margin-bottom: 10px;
+}
+
+.track-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.9);
+}
+
+.track-space:hover .track-tooltip {
+    opacity: 1;
+}
+
+/* Space for player tokens */
+.space-players {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 5px;
+    z-index: 25;
 }
 
 /* Volcano Space */
@@ -3446,4 +3544,323 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
 @keyframes lavaGlow {
     0% { opacity: 0.1; }
     100% { opacity: 0.3; }
+}
+
+
+
+/* ===== ANIMATION STYLES ===== */
+
+/* Falling coconut animation */
+.falling-coconut-animated {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+/* Impact effect */
+.impact-effect {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 999;
+}
+
+.impact-particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #ff6b6b;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    animation: impactBurst 0.6s ease-out forwards;
+}
+
+@keyframes impactBurst {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(calc(-50% + var(--end-x)), calc(-50% + var(--end-y))) scale(0);
+        opacity: 0;
+    }
+}
+
+/* Volcano eruption styles */
+.volcano-feature.erupting {
+    animation: volcanoShake 0.5s ease-in-out infinite;
+}
+
+@keyframes volcanoShake {
+    0%, 100% { transform: translate(-50%, -50%) translateX(0); }
+    25% { transform: translate(-50%, -50%) translateX(-2px); }
+    75% { transform: translate(-50%, -50%) translateX(2px); }
+}
+
+.lava-eruption-container {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.lava-particle {
+    position: absolute;
+    background: radial-gradient(circle, #ff6b00, #ff0000);
+    border-radius: 50%;
+    box-shadow: 0 0 10px #ff6b00;
+    animation: lavaFly 3s ease-out forwards;
+}
+
+@keyframes lavaFly {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: 
+            translateX(calc(sin(var(--angle)) * var(--velocity))) 
+            translateY(calc(cos(var(--angle)) * var(--velocity) * -1 + 300px)) 
+            scale(0);
+        opacity: 0;
+    }
+}
+
+/* Smoke particles */
+.volcano-smoke-container {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 100px;
+    pointer-events: none;
+}
+
+.smoke-particle {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle, rgba(100,100,100,0.8), transparent);
+    border-radius: 50%;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: smokeRise 3s ease-out forwards;
+}
+
+@keyframes smokeRise {
+    0% {
+        transform: translateX(-50%) translateY(0) scale(0.5);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateX(calc(-50% + (random() - 0.5) * 100px)) translateY(-150px) scale(2);
+        opacity: 0;
+    }
+}
+
+/* Player bounce animation */
+.player-marker.bouncing {
+    animation: playerBounce 0.3s ease-out;
+}
+
+@keyframes playerBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Danger space activation */
+.track-space.danger-activated {
+    animation: dangerPulseIntense 0.5s ease-in-out 3;
+}
+
+@keyframes dangerPulseIntense {
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+    }
+    50% { 
+        transform: scale(1.1);
+        box-shadow: 0 0 0 15px rgba(255, 107, 107, 0);
+    }
+}
+
+/* Banana slip animation */
+.banana-peel-animation {
+    position: absolute;
+    font-size: 40px;
+    z-index: 100;
+    pointer-events: none;
+}
+
+/* Crab animation */
+.crab-animation {
+    position: absolute;
+    font-size: 40px;
+    z-index: 100;
+    pointer-events: none;
+}
+
+/* Quicksand effect */
+.track-space.quicksand-active {
+    animation: quicksandSink 2s ease-in-out;
+}
+
+@keyframes quicksandSink {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(0.9); }
+}
+
+.quicksand-ripple {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    border: 2px solid #8B6F47;
+    border-radius: 50%;
+    animation: rippleExpand 2s ease-out;
+}
+
+@keyframes rippleExpand {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+    }
+}
+
+/* Game container shake */
+#game-container.shaking {
+    animation: containerShake 1s ease-in-out;
+}
+
+@keyframes containerShake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* Volcano sparks */
+.volcano-spark {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #ff6b00;
+    border-radius: 50%;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: sparkFly 1s ease-out forwards;
+}
+
+@keyframes sparkFly {
+    0% {
+        transform: translateX(-50%) translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(calc(-50% + (random() - 0.5) * 100px)) translateY(-100px) scale(0);
+        opacity: 0;
+    }
+}
+
+/* Victory confetti */
+.confetti-celebration {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2000;
+}
+
+.confetti-piece {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: -10px;
+    animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+/* Enhanced 3D volcano styling */
+#volcano-feature {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.volcano-base {
+    background: 
+        linear-gradient(135deg, #8b4513 0%, #654321 25%, #4a3018 50%, #3a2010 100%),
+        radial-gradient(ellipse at top, #ff6b00 0%, transparent 30%);
+    background-blend-mode: multiply;
+    position: relative;
+    overflow: hidden;
+}
+
+.volcano-base::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 30%;
+    background: radial-gradient(ellipse at center, #ff4500 0%, transparent 70%);
+    opacity: 0.6;
+    animation: lavaGlowPulse 3s ease-in-out infinite;
+}
+
+@keyframes lavaGlowPulse {
+    0%, 100% { opacity: 0.4; transform: scale(0.9); }
+    50% { opacity: 0.8; transform: scale(1.1); }
+}
+
+/* Enhanced track space hover effects */
+.track-space {
+    position: relative;
+    overflow: visible;
+}
+
+.track-space::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, transparent 30%, rgba(255,255,255,0.3) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.track-space:hover::after {
+    opacity: 1;
 }

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <radialGradient id="sandGrad">
+      <stop offset="0%" style="stop-color:#D4A574;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B6F47;stop-opacity:1" />
+    </radialGradient>
+    <filter id="shadow">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <!-- Quicksand pit -->
+  <ellipse cx="50" cy="60" rx="40" ry="25" fill="url(#sandGrad)" filter="url(#shadow)"/>
+  <!-- Swirl pattern -->
+  <path d="M50 60 Q30 50 30 60 Q30 70 50 70 Q70 70 70 60 Q70 50 50 50 Q40 50 40 60 Q40 65 50 65 Q60 65 60 60" 
+        stroke="#8B6F47" stroke-width="2" fill="none" opacity="0.6"/>
+  <!-- Sinking footprints -->
+  <ellipse cx="40" cy="55" rx="8" ry="5" fill="#6B5637" opacity="0.7"/>
+  <ellipse cx="60" cy="65" rx="8" ry="5" fill="#6B5637" opacity="0.5"/>
+  <!-- Warning ripples -->
+  <circle cx="50" cy="60" r="20" fill="none" stroke="#FF9800" stroke-width="2" opacity="0.4"/>
+  <circle cx="50" cy="60" r="30" fill="none" stroke="#FF9800" stroke-width="1" opacity="0.3"/>
+  <!-- Danger text -->
+  <text x="50" y="20" text-anchor="middle" font-size="12" fill="#FF5722" font-weight="bold">DANGER</text>
+</svg>

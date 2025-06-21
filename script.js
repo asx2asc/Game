@@ -234,7 +234,21 @@ function updatePlayerPositions() {
 function movePlayerToSpace(playerType, newSpace, animated = true) {
     const currentSpace = playerType === 'human' ? humanMapPosition : aiMapPosition;
     
-    if (animated && currentSpace > 0) {
+    if (animated && currentSpace > 0 && window.GameAnimations) {
+        // Use enhanced animation system
+        const playerId = playerType === 'human' ? 'human-marker' : 'ai-marker';
+        window.GameAnimations.playerMovement(playerId, currentSpace, newSpace, () => {
+            if (playerType === 'human') {
+                humanMapPosition = newSpace;
+            } else {
+                aiMapPosition = newSpace;
+            }
+            updatePlayerPositions();
+            // Check for danger space after movement completes
+            checkForDangerSpace(playerType, newSpace);
+        });
+    } else if (animated && currentSpace > 0) {
+        // Fallback to basic animation
         animatePlayerMovement(playerType, currentSpace, newSpace);
     } else {
         if (playerType === 'human') {
@@ -295,9 +309,15 @@ function showDangerEvent(playerType, danger) {
     // Show modal
     modal.style.display = 'flex';
     
-    // Add coconut falling animation for coconut events
-    if (danger.type === 'COCONUT_FALL' || danger.type === 'COCONUT_STORM') {
-        createFallingCoconuts();
+    // Use enhanced animations if available
+    if (window.GameAnimations) {
+        const spaceNumber = playerType === 'human' ? humanMapPosition : aiMapPosition;
+        window.GameAnimations.dangerActivation(spaceNumber, danger.type);
+    } else {
+        // Fallback to basic animation
+        if (danger.type === 'COCONUT_FALL' || danger.type === 'COCONUT_STORM') {
+            createFallingCoconuts();
+        }
     }
     
     // Handle continue button
@@ -1350,9 +1370,19 @@ async function endGame(winnerPlayer) { // (Assumed correct from previous)
     gameScreen.style.display = 'none'; // Now hide game screen
     gameOverScreen.style.display = 'flex';
 
-    if (winnerPlayer === "Human" || winnerPlayer === "Tie") {
-        for (let i = 0; i < 60; i++) { createConfetto(); }
-        // createFireworks(5);
+    // Use enhanced victory celebration if available
+    if (window.GameAnimations) {
+        if (winnerPlayer === "Human") {
+            window.GameAnimations.victoryCelebration();
+        } else if (winnerPlayer === "Tie") {
+            // Smaller celebration for tie
+            window.GameAnimations.volcanoEruption();
+        }
+    } else {
+        // Fallback to basic celebration
+        if (winnerPlayer === "Human" || winnerPlayer === "Tie") {
+            for (let i = 0; i < 60; i++) { createConfetto(); }
+        }
     }
 }
 
