@@ -71,7 +71,18 @@ function generateGameTrack() {
             }
             
             space.appendChild(dangerIcon);
-            space.title = dangerSpaces[spaceNum].message;
+            
+            // Add enhanced tooltip
+            const tooltip = document.createElement('div');
+            tooltip.className = 'track-tooltip';
+            tooltip.textContent = `Space ${spaceNum}: ${dangerSpaces[spaceNum].message}`;
+            space.appendChild(tooltip);
+        } else {
+            // Add tooltip for normal spaces
+            const tooltip = document.createElement('div');
+            tooltip.className = 'track-tooltip';
+            tooltip.textContent = `Space ${spaceNum}: Safe passage`;
+            space.appendChild(tooltip);
         }
         
         // Add container for players
@@ -103,6 +114,55 @@ function generateGameTrack() {
     
     // Draw path lines connecting spaces
     drawTrackPath(pathSvg);
+    
+    // Add thematic decorations
+    addThematicDecorations(trackContainer);
+    
+    // Add directional arrows
+    addDirectionalArrows();
+}
+
+// Add thematic decorations around the island
+function addThematicDecorations(container) {
+    // Add palm trees around the island edges
+    const palmTreePositions = [
+        { x: 150, y: 100 },
+        { x: 650, y: 120 },
+        { x: 180, y: 450 },
+        { x: 620, y: 480 },
+        { x: 300, y: 80 },
+        { x: 500, y: 520 }
+    ];
+    
+    palmTreePositions.forEach((pos, index) => {
+        const palmTree = document.createElement('div');
+        palmTree.className = 'palm-tree-decoration';
+        palmTree.textContent = '🌴';
+        palmTree.style.left = pos.x + 'px';
+        palmTree.style.top = pos.y + 'px';
+        palmTree.style.animationDelay = (index * 0.5) + 's';
+        container.appendChild(palmTree);
+    });
+    
+    // Add some seashells near the beach area
+    const shellPositions = [
+        { x: 120, y: 200, icon: '🐚' },
+        { x: 140, y: 250, icon: '🦀' },
+        { x: 160, y: 180, icon: '⭐' }
+    ];
+    
+    shellPositions.forEach(pos => {
+        const shell = document.createElement('div');
+        shell.className = 'beach-decoration';
+        shell.textContent = pos.icon;
+        shell.style.position = 'absolute';
+        shell.style.left = pos.x + 'px';
+        shell.style.top = pos.y + 'px';
+        shell.style.fontSize = '16px';
+        shell.style.opacity = '0.6';
+        shell.style.zIndex = '1';
+        container.appendChild(shell);
+    });
 }
 
 // Draw SVG path lines connecting track spaces
@@ -181,14 +241,27 @@ function updatePlayerPositionOnTrack(player, position) {
 async function triggerDangerSpace(player, position) {
     const danger = dangerSpaces[position];
     
+    // Play danger sound effect
+    playDangerSound(danger.type);
+    
     // Show danger message
     updateInfoMessage(`${player === 'human' ? 'You' : 'AI'} landed on a danger space! ${danger.message}`);
     
-    // Visual effect on the space
+    // Enhanced visual effects on the space
     const space = document.getElementById(`space-${position}`);
     if (space) {
         space.classList.add('danger-triggered');
-        setTimeout(() => space.classList.remove('danger-triggered'), 1000);
+        
+        // Add particle effects based on danger type
+        createDangerParticles(space, danger.type);
+        
+        // Screen shake effect for dramatic dangers
+        if (['VOLCANO_RUMBLE', 'LAVA_SPLASH'].includes(danger.type)) {
+            document.body.classList.add('screen-shake');
+            setTimeout(() => document.body.classList.remove('screen-shake'), 500);
+        }
+        
+        setTimeout(() => space.classList.remove('danger-triggered'), 2000);
     }
     
     // Apply effect
@@ -327,4 +400,162 @@ if (window.gameState) {
             }, 500);
         }
     };
+}
+
+
+// Sound effects for danger spaces
+function playDangerSound(dangerType) {
+    // Use existing sound system if available
+    if (typeof playSound === 'function') {
+        switch(dangerType) {
+            case 'COCONUT_FALL':
+            case 'COCONUT_STORM':
+                playSound('coconutFall');
+                break;
+            case 'SLIP':
+                playSound('slip');
+                break;
+            case 'CRAB_ATTACK':
+                playSound('crabAttack');
+                break;
+            case 'QUICKSAND':
+                playSound('quicksand');
+                break;
+            case 'VOLCANO_RUMBLE':
+            case 'LAVA_SPLASH':
+                playSound('volcanoRumble');
+                break;
+            default:
+                playSound('danger');
+        }
+    }
+}
+
+// Create particle effects for danger spaces
+function createDangerParticles(space, dangerType) {
+    const particleContainer = document.createElement('div');
+    particleContainer.className = 'danger-particles';
+    space.appendChild(particleContainer);
+    
+    const particleCount = 8;
+    const particles = [];
+    
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'danger-particle';
+        
+        // Set particle appearance based on danger type
+        switch(dangerType) {
+            case 'COCONUT_FALL':
+            case 'COCONUT_STORM':
+                particle.textContent = '🥥';
+                particle.style.fontSize = '12px';
+                break;
+            case 'SLIP':
+                particle.textContent = '💨';
+                particle.style.fontSize = '10px';
+                break;
+            case 'CRAB_ATTACK':
+                particle.textContent = '🦀';
+                particle.style.fontSize = '8px';
+                break;
+            case 'QUICKSAND':
+                particle.style.backgroundColor = '#d2b48c';
+                particle.style.width = '4px';
+                particle.style.height = '4px';
+                particle.style.borderRadius = '50%';
+                break;
+            case 'VOLCANO_RUMBLE':
+            case 'LAVA_SPLASH':
+                particle.style.backgroundColor = '#ff4500';
+                particle.style.width = '6px';
+                particle.style.height = '6px';
+                particle.style.borderRadius = '50%';
+                particle.style.boxShadow = '0 0 4px #ff4500';
+                break;
+            default:
+                particle.textContent = '✨';
+                particle.style.fontSize = '10px';
+        }
+        
+        // Random position and animation
+        const angle = (i / particleCount) * 2 * Math.PI;
+        const distance = 30 + Math.random() * 20;
+        const x = Math.cos(angle) * distance;
+        const y = Math.sin(angle) * distance;
+        
+        particle.style.position = 'absolute';
+        particle.style.left = '50%';
+        particle.style.top = '50%';
+        particle.style.transform = 'translate(-50%, -50%)';
+        particle.style.pointerEvents = 'none';
+        particle.style.zIndex = '100';
+        
+        particleContainer.appendChild(particle);
+        particles.push({ element: particle, x, y });
+        
+        // Animate particle
+        particle.animate([
+            { transform: 'translate(-50%, -50%) scale(0)', opacity: 1 },
+            { transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(1)`, opacity: 1, offset: 0.7 },
+            { transform: `translate(calc(-50% + ${x * 1.5}px), calc(-50% + ${y * 1.5}px)) scale(0)`, opacity: 0 }
+        ], {
+            duration: 1000,
+            easing: 'ease-out'
+        });
+    }
+    
+    // Remove particle container after animation
+    setTimeout(() => {
+        if (particleContainer.parentNode) {
+            particleContainer.parentNode.removeChild(particleContainer);
+        }
+    }, 1000);
+}
+
+// Add directional arrows between track spaces
+function addDirectionalArrows() {
+    const trackContainer = document.getElementById('game-track');
+    if (!trackContainer) return;
+    
+    for (let i = 0; i < stonesOfFateCoordinates.length - 1; i++) {
+        const current = stonesOfFateCoordinates[i];
+        const next = stonesOfFateCoordinates[i + 1];
+        
+        const arrow = document.createElement('div');
+        arrow.className = 'track-arrow';
+        
+        // Calculate position between current and next space
+        const midX = (current.x + next.x) / 2;
+        const midY = (current.y + next.y) / 2;
+        
+        // Calculate angle
+        const angle = Math.atan2(next.y - current.y, next.x - current.x) * 180 / Math.PI;
+        
+        arrow.style.left = midX + 'px';
+        arrow.style.top = midY + 'px';
+        arrow.style.transform = `rotate(${angle + 90}deg)`;
+        
+        trackContainer.appendChild(arrow);
+    }
+}
+
+// Highlight current player positions
+function highlightCurrentPositions() {
+    // Remove existing highlights
+    document.querySelectorAll('.track-space').forEach(space => {
+        space.classList.remove('current-player-position');
+    });
+    
+    // Highlight human player position
+    const humanSpace = document.getElementById(`space-${humanMapPosition}`);
+    if (humanSpace) {
+        humanSpace.classList.add('current-player-position');
+    }
+    
+    // Highlight AI player position
+    const aiSpace = document.getElementById(`space-${aiMapPosition}`);
+    if (aiSpace) {
+        aiSpace.classList.add('current-player-position');
+    }
 }

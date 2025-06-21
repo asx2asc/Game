@@ -3055,3 +3055,263 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
 #card-display-area {
     margin-top: 20px;
 }
+
+
+/* Enhanced Track Space Visual Effects */
+.track-space {
+    transition: all 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.track-space:hover {
+    transform: scale(1.3) !important;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.8) !important;
+    z-index: 35 !important;
+}
+
+.track-space.glow-animation {
+    animation: trackGlow 2s ease-in-out infinite;
+}
+
+@keyframes trackGlow {
+    0%, 100% { 
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4) !important;
+    }
+    50% { 
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 215, 0, 1) !important;
+    }
+}
+
+/* Track Path Animation */
+.track-path {
+    stroke-dasharray: 5, 3;
+    animation: pathFlow 3s linear infinite;
+}
+
+@keyframes pathFlow {
+    0% { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: 24; }
+}
+
+/* Enhanced Danger Space Effects */
+.track-space.danger-space {
+    background: radial-gradient(circle, #ff6b6b, #c92a2a) !important;
+    border-color: #8b0000 !important;
+    animation: dangerPulse 1.5s ease-in-out infinite !important;
+}
+
+@keyframes dangerPulse {
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), 0 0 0 0 rgba(255, 0, 0, 0.7);
+    }
+    50% { 
+        transform: scale(1.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 0, 0, 1);
+    }
+}
+
+/* Tooltip for track spaces */
+.track-tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    transform: translateX(-50%);
+    bottom: 100%;
+    left: 50%;
+    margin-bottom: 5px;
+}
+
+.track-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.9) transparent transparent transparent;
+}
+
+.track-space:hover .track-tooltip {
+    opacity: 1;
+}
+
+/* Directional arrows between spaces */
+.track-arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 8px solid #8b4513;
+    z-index: 8;
+    opacity: 0.7;
+}
+
+/* Player position highlighting */
+.track-space.current-player-position {
+    animation: currentPositionGlow 1s ease-in-out infinite alternate;
+}
+
+@keyframes currentPositionGlow {
+    0% { 
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), 0 0 10px rgba(0, 123, 255, 0.8);
+    }
+    100% { 
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), 0 0 25px rgba(0, 123, 255, 1);
+    }
+}
+
+
+/* Screen shake effect for dramatic dangers */
+@keyframes screenShake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+    20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
+
+.screen-shake {
+    animation: screenShake 0.5s ease-in-out;
+}
+
+/* Danger triggered effect */
+.track-space.danger-triggered {
+    animation: dangerTrigger 2s ease-in-out;
+    z-index: 40 !important;
+}
+
+@keyframes dangerTrigger {
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.3) rotate(5deg); }
+    50% { transform: scale(1.1) rotate(-3deg); }
+    75% { transform: scale(1.2) rotate(2deg); }
+}
+
+/* Particle effects container */
+.danger-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 50;
+}
+
+.danger-particle {
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Space active animation when player lands */
+.track-space.space-active {
+    animation: spaceActive 0.5s ease-in-out;
+}
+
+@keyframes spaceActive {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); box-shadow: 0 0 20px rgba(0, 123, 255, 0.8); }
+}
+
+/* Enhanced track path styling */
+.track-path-line {
+    stroke: #8b4513;
+    stroke-width: 3;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.8;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 1024px) {
+    #death-by-coconuts-board {
+        transform: scale(0.8);
+        transform-origin: center top;
+    }
+    
+    .track-space {
+        width: 30px !important;
+        height: 30px !important;
+    }
+    
+    .track-space .space-number {
+        font-size: 10px !important;
+    }
+    
+    .track-tooltip {
+        font-size: 10px;
+        padding: 4px 8px;
+    }
+}
+
+@media (max-width: 768px) {
+    #death-by-coconuts-board {
+        transform: scale(0.6);
+        transform-origin: center top;
+    }
+    
+    .track-space {
+        width: 25px !important;
+        height: 25px !important;
+    }
+    
+    .track-space .space-number {
+        font-size: 8px !important;
+    }
+}
+
+/* Thematic decorations */
+.palm-tree-decoration {
+    position: absolute;
+    font-size: 24px;
+    z-index: 1;
+    opacity: 0.7;
+    animation: palmSway 4s ease-in-out infinite;
+}
+
+@keyframes palmSway {
+    0%, 100% { transform: rotate(-2deg); }
+    50% { transform: rotate(2deg); }
+}
+
+/* Beach texture at start area */
+#coconut-beach-start::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle, rgba(255, 248, 220, 0.3) 0%, transparent 70%);
+    border-radius: inherit;
+    z-index: -1;
+}
+
+/* Lava effects near volcano */
+#volcano-feature::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 69, 0, 0.1) 0%, transparent 50%);
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    animation: lavaGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes lavaGlow {
+    0% { opacity: 0.1; }
+    100% { opacity: 0.3; }
+}

@@ -648,6 +648,11 @@ function initializeGameVariables() {
     }
     // Ensure updateMapDisplay is called to set initial text scores correctly
     updateMapDisplay();
+    
+    // Highlight initial positions on track
+    if (typeof highlightCurrentPositions === 'function') {
+        highlightCurrentPositions();
+    }
 }
 
 function actualStartGame() {
