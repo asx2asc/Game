@@ -93,24 +93,39 @@ function generateGameTrack() {
         trackContainer.appendChild(space);
     });
     
-    // Add the volcano space (final destination)
-    const volcanoSpace = document.createElement('div');
-    volcanoSpace.className = 'track-space volcano-space';
-    volcanoSpace.id = 'space-volcano';
-    volcanoSpace.dataset.space = '50';
-    volcanoSpace.style.left = '400px';
-    volcanoSpace.style.top = '300px';
-    
-    const volcanoLabel = document.createElement('span');
-    volcanoLabel.className = 'space-number';
-    volcanoLabel.textContent = 'VOLCANO';
-    volcanoSpace.appendChild(volcanoLabel);
-    
-    const volcanoPlayersContainer = document.createElement('div');
-    volcanoPlayersContainer.className = 'space-players';
-    volcanoSpace.appendChild(volcanoPlayersContainer);
-    
-    trackContainer.appendChild(volcanoSpace);
+    // Add spaces 46-50 leading to volcano
+    for (let i = 46; i <= 50; i++) {
+        const progress = (i - 45) / 5;
+        const space = document.createElement('div');
+        space.className = 'track-space';
+        if (i === 50) {
+            space.classList.add('volcano-space');
+        }
+        space.id = `space-${i}`;
+        space.dataset.space = i;
+        
+        // Position spaces between last coordinate and volcano
+        const lastCoord = stonesOfFateCoordinates[stonesOfFateCoordinates.length - 1];
+        space.style.left = (lastCoord.x + (progress * (400 - lastCoord.x))) + 'px';
+        space.style.top = (lastCoord.y + (progress * (300 - lastCoord.y))) + 'px';
+        
+        const numberSpan = document.createElement('span');
+        numberSpan.className = 'space-number';
+        numberSpan.textContent = i === 50 ? 'VOLCANO' : i;
+        space.appendChild(numberSpan);
+        
+        // Add tooltip
+        const tooltip = document.createElement('div');
+        tooltip.className = 'track-tooltip';
+        tooltip.textContent = i === 50 ? 'Space 50: The Volcano of Doom!' : `Space ${i}: Almost there!`;
+        space.appendChild(tooltip);
+        
+        const playersContainer = document.createElement('div');
+        playersContainer.className = 'space-players';
+        space.appendChild(playersContainer);
+        
+        trackContainer.appendChild(space);
+    }
     
     // Draw path lines connecting spaces
     drawTrackPath(pathSvg);
@@ -167,24 +182,58 @@ function addThematicDecorations(container) {
 
 // Draw SVG path lines connecting track spaces
 function drawTrackPath(svg) {
-    const pathData = [];
+    // Set SVG viewBox to match board dimensions
+    svg.setAttribute('viewBox', '0 0 800 640');
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
     
-    // Create path string from coordinates
-    stonesOfFateCoordinates.forEach((coord, index) => {
+    // Create a smooth curved path through all coordinates
+    const pathData = [];
+    const coords = [...stonesOfFateCoordinates];
+    
+    // Add spaces 46-50 leading to volcano
+    for (let i = 46; i <= 50; i++) {
+        const progress = (i - 45) / 5;
+        coords.push({
+            x: 688 + (progress * (400 - 688)),
+            y: 144 + (progress * (300 - 144))
+        });
+    }
+    
+    // Create smooth bezier curve path
+    coords.forEach((coord, index) => {
         if (index === 0) {
-            pathData.push(`M ${coord.x + 20} ${coord.y + 20}`);
+            pathData.push(`M ${coord.x + 22.5} ${coord.y + 22.5}`);
+        } else if (index < coords.length - 1) {
+            // Calculate control points for smooth curves
+            const prev = coords[index - 1];
+            const next = coords[index + 1];
+            const cp1x = prev.x + (coord.x - prev.x) * 0.5 + 22.5;
+            const cp1y = prev.y + (coord.y - prev.y) * 0.5 + 22.5;
+            const cp2x = coord.x + (next.x - coord.x) * 0.5 + 22.5;
+            const cp2y = coord.y + (next.y - coord.y) * 0.5 + 22.5;
+            
+            pathData.push(`C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${coord.x + 22.5} ${coord.y + 22.5}`);
         } else {
-            pathData.push(`L ${coord.x + 20} ${coord.y + 20}`);
+            pathData.push(`L ${coord.x + 22.5} ${coord.y + 22.5}`);
         }
     });
     
-    // Connect to volcano
-    pathData.push(`L 420 320`);
-    
+    // Create main track path
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     path.setAttribute('d', pathData.join(' '));
     path.setAttribute('class', 'track-path-line');
+    path.setAttribute('fill', 'none');
     svg.appendChild(path);
+    
+    // Add decorative dashed overlay
+    const dashedPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    dashedPath.setAttribute('d', pathData.join(' '));
+    dashedPath.setAttribute('class', 'track-path-line-overlay');
+    dashedPath.setAttribute('fill', 'none');
+    dashedPath.setAttribute('stroke', 'rgba(255, 255, 255, 0.3)');
+    dashedPath.setAttribute('stroke-width', '2');
+    dashedPath.setAttribute('stroke-dasharray', '5, 10');
+    svg.appendChild(dashedPath);
 }
 
 // Update player position on visual track
