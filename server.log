@@ -1,1 +1,21 @@
-127.0.0.1 - - [21/Jun/2025 05:37:51] "HEAD / HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2025 05:39:26] "HEAD / HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2025 05:39:41] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2025 05:39:41] "GET /style.css HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2025 05:39:41] "GET /assets/images/logo_death_by_coconuts.jpg?v=2 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2025 05:39:42] "GET /animations.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2025 05:39:42] "GET /track-system.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2025 05:39:42] "GET /assets/avatars/ai_robot_neutral.png HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2025 05:39:42] "GET /script.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2025 05:39:42] "GET /assets/images/menu_background_illustrative.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2025 05:39:57] "GET /assets/textures/felt_green.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2025 05:39:57] "GET /assets/textures/game_board_main_texture.png HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2025 05:39:57] "GET /assets/pawns/ai_robot_pawn.png HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2025 05:39:57] code 404, message File not found
+127.0.0.1 - - [21/Jun/2025 05:39:57] "GET /assets/textures/sand-texture.png HTTP/1.1" 404 -
+127.0.0.1 - - [21/Jun/2025 05:39:57] code 404, message File not found
+127.0.0.1 - - [21/Jun/2025 05:39:57] "GET /assets/textures/palm-leaves-overlay.png HTTP/1.1" 404 -
+127.0.0.1 - - [21/Jun/2025 05:39:57] "GET /assets/icons/skull_white.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2025 05:39:57] "GET /assets/icons/chest_white.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2025 05:39:57] code 404, message File not found
+127.0.0.1 - - [21/Jun/2025 05:39:57] "GET /assets/images/octopus_tentacle_single.svg HTTP/1.1" 404 -
+127.0.0.1 - - [21/Jun/2025 05:39:57] "GET /assets/textures/empty_card_slot_pattern.png HTTP/1.1" 200 -
