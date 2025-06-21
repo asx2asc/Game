@@ -2514,39 +2514,44 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
 
 .track-path-line {
     fill: none;
-    stroke: rgba(139, 69, 19, 0.3);
-    stroke-width: 2;
-    stroke-dasharray: 5, 5;
+    stroke: rgba(139, 69, 19, 0.6);
+    stroke-width: 4;
+    stroke-dasharray: 8, 4;
+    stroke-linecap: round;
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
 }
 
 /* Individual Track Spaces */
 .track-space {
     position: absolute;
-    width: 40px;
-    height: 40px;
-    background-color: #f5deb3;
-    border: 2px solid #8b4513;
+    width: 45px;
+    height: 45px;
+    background-color: #ffffff;
+    background-image: radial-gradient(circle at center, #ffffff 0%, #f5deb3 100%);
+    border: 3px solid #8b4513;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    z-index: 2;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 20;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3), inset 0 1px 3px rgba(255, 255, 255, 0.5);
 }
 
 .track-space:hover {
-    transform: scale(1.1);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    background-color: #ffefd5;
+    transform: scale(1.15);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4), 0 0 15px rgba(139, 69, 19, 0.3);
+    background-color: #fff8dc;
+    border-color: #654321;
 }
 
 .space-number {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: bold;
     color: #5d4037;
-    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    font-family: 'Baloo Bhai 2', cursive;
 }
 
 /* Danger Spaces */
@@ -2627,54 +2632,122 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 120px;
-    height: 150px;
-    z-index: 10;
+    width: 150px;
+    height: 180px;
+    z-index: 15;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4));
 }
 
 .volcano-base {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 100px;
-    background: conic-gradient(from 180deg at 50% 100%, #8b4513, #654321, #8b4513);
-    clip-path: polygon(20% 100%, 80% 100%, 70% 0%, 30% 0%);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    height: 120px;
+    background: linear-gradient(to bottom, 
+        #8b4513 0%, 
+        #654321 30%, 
+        #4a3018 60%, 
+        #3a2010 100%);
+    clip-path: polygon(15% 100%, 85% 100%, 75% 0%, 25% 0%);
+    box-shadow: inset -5px 0 15px rgba(0, 0, 0, 0.5), 
+                inset 5px 0 15px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+.volcano-base::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 5px,
+        rgba(0, 0, 0, 0.1) 5px,
+        rgba(0, 0, 0, 0.1) 10px
+    );
+    clip-path: inherit;
 }
 
 .volcano-smoke {
     position: absolute;
-    top: -30px;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 80px;
+    background: radial-gradient(ellipse at bottom, 
+        rgba(100, 100, 100, 0.8) 0%, 
+        rgba(128, 128, 128, 0.4) 40%, 
+        transparent 100%);
+    filter: blur(15px);
+    animation: smokeRise 4s ease-in-out infinite;
+}
+
+.volcano-smoke::before {
+    content: '';
+    position: absolute;
+    bottom: -20px;
     left: 50%;
     transform: translateX(-50%);
     width: 40px;
-    height: 60px;
-    background: radial-gradient(ellipse, rgba(128, 128, 128, 0.6), transparent);
+    height: 40px;
+    background: radial-gradient(circle, rgba(80, 80, 80, 0.6), transparent);
     filter: blur(10px);
-    animation: smokeRise 4s ease-in-out infinite;
+    animation: smokePuff 3s ease-in-out infinite;
 }
 
 @keyframes smokeRise {
     0%, 100% { 
-        transform: translateX(-50%) translateY(0) scale(1);
-        opacity: 0.6;
+        transform: translateX(-50%) translateY(0) scale(1) rotate(0deg);
+        opacity: 0.8;
+    }
+    25% {
+        transform: translateX(-45%) translateY(-10px) scale(1.2) rotate(5deg);
     }
     50% { 
-        transform: translateX(-50%) translateY(-20px) scale(1.5);
-        opacity: 0.3;
+        transform: translateX(-55%) translateY(-25px) scale(1.5) rotate(-5deg);
+        opacity: 0.4;
     }
+    75% {
+        transform: translateX(-45%) translateY(-15px) scale(1.3) rotate(3deg);
+    }
+}
+
+@keyframes smokePuff {
+    0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.6; }
+    50% { transform: translateX(-50%) scale(1.3); opacity: 0.3; }
 }
 
 .volcano-lava {
     position: absolute;
-    top: 20px;
+    top: 15px;
     left: 50%;
     transform: translateX(-50%);
-    width: 30px;
-    height: 30px;
-    background: radial-gradient(circle, #ff6600, #ff0000);
-    border-radius: 50%;
+    width: 40px;
+    height: 35px;
+    background: radial-gradient(ellipse at center, 
+        #ffff00 0%, 
+        #ff6600 30%, 
+        #ff0000 60%, 
+        #cc0000 100%);
+    border-radius: 50% 50% 60% 60%;
     animation: lavaGlow 2s ease-in-out infinite;
+    overflow: hidden;
+}
+
+.volcano-lava::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    background: radial-gradient(circle, rgba(255, 255, 0, 0.8), transparent);
+    animation: lavaBubble 1.5s ease-in-out infinite;
 }
 
 @keyframes lavaGlow {
@@ -2685,6 +2758,17 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
     50% { 
         box-shadow: 0 0 40px #ff6600, inset 0 0 20px #ff0000;
         transform: translateX(-50%) scale(1.1);
+    }
+}
+
+@keyframes lavaBubble {
+    0%, 100% { 
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.8;
+    }
+    50% { 
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0.4;
     }
 }
 
@@ -2704,6 +2788,29 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
 @keyframes volcanoGlowPulse {
     0%, 100% { opacity: 0.4; transform: translateX(-50%) scale(1); }
     50% { opacity: 0.8; transform: translateX(-50%) scale(1.3); }
+}
+
+/* Track Tooltip */
+.track-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    margin-bottom: 5px;
+    z-index: 100;
+}
+
+.track-space:hover .track-tooltip {
+    opacity: 1;
 }
 
 /* Player Markers on Track */
@@ -2728,10 +2835,35 @@ button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
 #island-landmass {
     background: radial-gradient(ellipse at center, #faf0e6, #f5deb3);
     border: 3px solid #d2b48c;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
 /* Track Space Positioning - Will be set by JavaScript based on coordinates */
 
+
+/* Track Decorations */
+.palm-tree-decoration {
+    position: absolute;
+    font-size: 32px;
+    opacity: 0.7;
+    z-index: 5;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+    animation: palmSway 4s ease-in-out infinite;
+    transform-origin: bottom center;
+}
+
+@keyframes palmSway {
+    0%, 100% { transform: rotate(-2deg); }
+    50% { transform: rotate(2deg); }
+}
+
+.beach-decoration {
+    position: absolute;
+    font-size: 16px;
+    opacity: 0.6;
+    z-index: 1;
+    filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.2));
+}
 
 /* Additional Track Enhancements */
 .space-active {
