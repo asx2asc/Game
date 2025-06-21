@@ -31,6 +31,8 @@ function generateGameTrack() {
         // Position the space
         space.style.left = coord.x + 'px';
         space.style.top = coord.y + 'px';
+        // Add animation delay based on space index
+        space.style.setProperty('--space-index', index);
         
         // Add space number
         const numberSpan = document.createElement('span');
@@ -108,6 +110,8 @@ function generateGameTrack() {
         const lastCoord = stonesOfFateCoordinates[stonesOfFateCoordinates.length - 1];
         space.style.left = (lastCoord.x + (progress * (400 - lastCoord.x))) + 'px';
         space.style.top = (lastCoord.y + (progress * (300 - lastCoord.y))) + 'px';
+        // Add animation delay
+        space.style.setProperty('--space-index', 44 + i);
         
         const numberSpan = document.createElement('span');
         numberSpan.className = 'space-number';
