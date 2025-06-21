@@ -8,6 +8,8 @@ function generateGameTrack() {
     
     console.log('Track container:', trackContainer);
     console.log('Path SVG:', pathSvg);
+    console.log('Track container exists:', !!trackContainer);
+    console.log('Path SVG exists:', !!pathSvg);
     
     if (!trackContainer || !pathSvg) {
         console.error('Track containers not found!');
@@ -21,6 +23,7 @@ function generateGameTrack() {
     pathSvg.innerHTML = '';
     
     // Create track spaces based on coordinates
+    console.log('Creating', stonesOfFateCoordinates.length, 'track spaces from coordinates');
     stonesOfFateCoordinates.forEach((coord, index) => {
         const spaceNum = index + 1;
         const space = document.createElement('div');
@@ -139,6 +142,8 @@ function generateGameTrack() {
     
     // Add directional arrows
     addDirectionalArrows();
+    
+    console.log('Track generation complete! Total spaces created:', trackContainer.children.length);
 }
 
 // Add thematic decorations around the island
